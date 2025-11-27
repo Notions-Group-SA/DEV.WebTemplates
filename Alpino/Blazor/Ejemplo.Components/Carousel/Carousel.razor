@@ -1,0 +1,211 @@
+﻿<section class="ng-carousel" id="ngc-1"
+         style="--ng-max-width: 1024px; --ng-aspect-ratio: 21/9; --ng-duration: 4s; --ng-steps: @Slides.Count; --ng-dot-w: 28px; --ng-dot-h: 5px; --ng-dot-radius: 999px; --ng-dot-color: red; --ng-dot-bg: rgba(255,255,255,.4);">
+
+    <div class="ngc-viewport">
+        <header class="ngc-header">
+            <h3 class="ngc-header-title">@GetCurrentSlide()?.Titulo</h3>
+            <p class="ngc-header-desc">@GetCurrentSlide()?.Descripcion</p>
+        </header>
+
+        @foreach (var slide in Slides)
+        {
+            var isActive = slide.Numero == idActivo;
+            var slideStyle = "";
+
+            if (isAutoMode)
+            {
+                // En modo automático, usar animaciones CSS
+                slideStyle = "";
+            }
+            else
+            {
+                // En modo manual, controlar completamente desde Blazor
+                slideStyle = $"animation: none !important; opacity: {(isActive ? "1" : "0")}; visibility: {(isActive ? "visible" : "hidden")};";
+            }
+
+            <div class="ngc-slide @(isAutoMode ? "" : "manual-mode")"
+                 id="@slide.Id"
+                 style="@slideStyle">
+                <img src="@slide.ImageUrl" alt="@slide.Titulo" />
+            </div>
+        }
+
+        <nav class="ngc-arrows">
+            <!-- Modo automático: flechas sin funcionalidad específica -->
+            <div class="for-auto" style="@(isAutoMode ? "display: flex; align-items: center; justify-content: space-between; padding: 0 .5rem;" : "display: none;")">
+                <a class="ngc-arrow prev" @onclick="ActivateManualModePrev" @onclick:preventDefault="true" aria-label="Activar modo manual">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a class="ngc-arrow next" @onclick="ActivateManualModeNext" @onclick:preventDefault="true" aria-label="Activar modo manual">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Modo manual: flechas funcionales -->
+            <div class="for-manual" style="@(!isAutoMode ? "display: flex; align-items: center; justify-content: space-between; padding: 0 .5rem;" : "display: none;")">
+                <a class="ngc-arrow prev" @onclick="SelPrev" @onclick:preventDefault="true" aria-label="Anterior">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a class="ngc-arrow next" @onclick="SelNext" @onclick:preventDefault="true" aria-label="Siguiente">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        <div class="ngc-dots">
+            @foreach (var slide in Slides)
+            {
+                var isActive = slide.Numero == idActivo;
+                var dotClass = "";
+                var dotStyle = "";
+
+                if (isAutoMode)
+                {
+                    // En modo automático, las animaciones CSS se encargan del estado
+                    dotClass = "";
+                    dotStyle = "";
+                }
+                else
+                {
+                    // En modo manual, usar clase CSS para el estado activo
+                    dotClass = isActive ? "active" : "";
+                    dotStyle = "";
+                }
+
+                <a aria-label="Slide @slide.Numero"
+                   class="@dotClass"
+                   @onclick="() => Seleccionar(slide)"
+                   @onclick:preventDefault="true"
+                   style="@dotStyle"></a>
+            }
+        </div>
+
+        <!-- Indicador de modo -->
+        <div class="mode-indicator" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(0,0,0,0.7); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 12px; z-index: 10;">
+            @(isAutoMode ? "Auto" : "Manual")
+        </div>
+    </div>
+</section>
+
+<section style="margin-top:2rem; max-width:960px;">
+    <p>Configurable por variables CSS:</p>
+    <ul>
+        <li><code>--ng-max-width</code> (ancho máximo)</li>
+        <li><code>--ng-aspect-ratio</code> (relación de aspecto)</li>
+        <li><code>--ng-duration</code> (tiempo por slide)</li>
+        <li><code>--ng-steps</code> (cantidad de slides)</li>
+        <li><code>--ng-dot-w</code> / <code>--ng-dot-h</code> / <code>--ng-dot-color</code> / <code>--ng-dot-bg</code> (dots)</li>
+    </ul>
+
+    <div style="margin-top: 1rem;">
+        <button @onclick="ToggleMode" class="btn btn-primary">
+            Cambiar a modo @(isAutoMode ? "Manual" : "Automático")
+        </button>
+        <button @onclick="ResetToStart" class="btn btn-secondary" style="margin-left: 0.5rem;">
+            Reiniciar
+        </button>
+    </div>
+</section>
+
+@code {
+    private int idActivo = 1; // Empezar con el primer slide
+    private bool isAutoMode = true; // Por defecto en modo automático
+
+    [Parameter]
+    public List<SlideViewModel> Slides { get; set; } = new List<SlideViewModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await Task.CompletedTask;
+    }
+
+    public void Seleccionar(SlideViewModel slide)
+    {
+        idActivo = slide.Numero;
+        isAutoMode = false; // Cambiar a modo manual al hacer clic en dot
+        StateHasChanged(); // Forzar re-render
+    }
+
+    public void SelPrev()
+    {
+        if (Slides.Any())
+        {
+            var currentIndex = Slides.FindIndex(s => s.Numero == idActivo);
+            if (currentIndex > 0)
+            {
+                idActivo = Slides[currentIndex - 1].Numero;
+            }
+            else
+            {
+                // Ir al último slide
+                idActivo = Slides.Last().Numero;
+            }
+            StateHasChanged(); // Forzar re-render
+        }
+    }
+
+    public void SelNext()
+    {
+        if (Slides.Any())
+        {
+            var currentIndex = Slides.FindIndex(s => s.Numero == idActivo);
+            if (currentIndex < Slides.Count - 1)
+            {
+                idActivo = Slides[currentIndex + 1].Numero;
+            }
+            else
+            {
+                // Ir al primer slide
+                idActivo =Slides.First().Numero;
+            }
+            StateHasChanged(); // Forzar re-render
+        }
+    }
+
+    public void ActivateManualModePrev()
+    {
+        isAutoMode = false;
+        SelPrev();
+        StateHasChanged();
+    }
+
+    public void ActivateManualModeNext()
+    {
+        isAutoMode = false;
+        SelNext();
+        StateHasChanged();
+    }
+
+    public void ToggleMode()
+    {
+        isAutoMode = !isAutoMode;
+        if (isAutoMode)
+        {
+            idActivo = Slides.FirstOrDefault()?.Numero ?? 1;
+        }
+        StateHasChanged();
+    }
+
+    public void ResetToStart()
+    {
+        idActivo = Slides.FirstOrDefault()?.Numero ?? 1;
+        isAutoMode = true;
+        StateHasChanged();
+    }
+
+    private SlideViewModel? GetCurrentSlide()
+    {
+        return Slides.FirstOrDefault(s => s.Numero == idActivo);
+    }
+
+
+}

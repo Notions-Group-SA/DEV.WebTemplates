@@ -1,0 +1,96 @@
+﻿@page "/demo-sidebar"
+
+
+@using Ejemplo
+@using Ejemplo.Components
+@using Ejemplo.Components.Layout
+
+
+@layout SidebarLayout
+
+<h3>SideBar</h3>
+
+<div class="demo-card">
+    <h2>Demo: Sidebar sin JS</h2>
+    <p>
+        Usá el botón “Sidebar” para abrir/cerrar. Cambiá lado con <code>ng-on-left</code> / <code>ng-on-right</code>.
+        Ajustá <code>--ng-width</code>, <code>--ng-duration</code> y <code>--ng-backdrop-opacity</code>.
+    </p>
+</div>
+
+<div class="ng-sidebar-host ng-on-left ng-swatches ng-swatch--cyan ng-swatches ng-swatch"
+     style="--ng-width: 420px; --ng-duration: .35s; --ng-easing: cubic-bezier(.22,.61,.36,1); --ng-backdrop-opacity: .35; ">
+
+    <input id="ng-toggle-a" class="ng-sidebar-toggle" type="checkbox" aria-hidden="true" />
+
+    <label for="ng-toggle-a" class="ng-open-button" aria-label="Abrir panel A">
+        Sidebar A
+    </label>
+
+    <label for="ng-toggle-a" class="ng-sidebar-backdrop" aria-hidden="true"></label>
+
+    <aside class="ng-sidebar" role="complementary" aria-labelledby="ng-sidebar-title-a">
+        <header class="ng-sidebar-header">
+            <h3 id="ng-sidebar-title-a" class="ng-title">Panel A</h3>
+            <label for="ng-toggle-a" class="ng-close" aria-label="Cerrar">×</label>
+        </header>
+
+
+
+        <div class="ng-sidebar-section">
+            <h4 class="ng-section-title">General</h4>
+            <ul class="ng-list">
+                <li class="ng-list-item">
+                    <label class="ng-checkbox">
+                        <input type="checkbox" />
+                        <span>Report Panel Usage</span>
+                    </label>
+                </li>
+                <li class="ng-list-item">
+                    <label class="ng-checkbox">
+                        <input type="checkbox" checked />
+                        <span>Email Redirect</span>
+                    </label>
+                </li>
+                <li class="ng-list-item">
+                    <label class="ng-checkbox">
+                        <input type="checkbox" />
+                        <span>Notifications</span>
+                    </label>
+                </li>
+            </ul>
+        </div>
+
+        <div class="ng-sidebar-section">
+            <h4 class="ng-section-title">Acciones</h4>
+            <div class="ng-actions">
+                <button class="ng-btn ng-btn--primary">Guardar</button>
+                <button class="ng-btn">Cancelar</button>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<div class="ng-sidebar-host ng-on-right"
+     style="--ng-width: 360px; --ng-duration: .30s; --ng-easing: cubic-bezier(.22,.61,.36,1); --ng-backdrop-opacity: .35;">
+
+    <input id="ng-toggle-b" class="ng-sidebar-toggle" type="checkbox" aria-hidden="true" />
+
+    <label for="ng-toggle-b" class="ng-open-button" aria-label="Abrir panel B">
+        Sidebar B
+    </label>
+
+    <label for="ng-toggle-b" class="ng-sidebar-backdrop" aria-hidden="true"></label>
+
+    <aside class="ng-sidebar" role="complementary" aria-labelledby="ng-sidebar-title-b">
+        <header class="ng-sidebar-header">
+            <h3 id="ng-sidebar-title-b" class="ng-title">Panel B</h3>
+            <label for="ng-toggle-b" class="ng-close" aria-label="Cerrar">×</label>
+        </header>
+
+        <div class="ng-sidebar-section">
+            <h4 class="ng-section-title">Contenido</h4>
+            <p style="margin:0; color:#4b5563">Ejemplo de segunda instancia independiente.</p>
+        </div>
+    </aside>
+</div>

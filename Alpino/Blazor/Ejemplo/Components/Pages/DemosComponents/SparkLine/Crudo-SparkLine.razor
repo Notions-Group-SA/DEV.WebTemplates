@@ -1,0 +1,20 @@
+﻿@page "/crudo-sparkline"
+
+<h3>Crudo_SparkLine</h3>
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<div class="col-lg-3 col-md-6 col-sm-12">
+    <div class="card">
+        <div class="body text-center">
+            <div class="sparkline m-b-20" data-type="bar" data-width="97%" data-height="40px" data-bar-Width="3" data-bar-Spacing="5" data-bar-Color="#00ced1">1,2,2,3,3,4,4,5,5,6,6,5,5,4,4,3,3,2,2,1</div>
+            <h3 class="m-b-0">457 512</h3>
+            <small class="displayblock">47% Average <i class="zmdi zmdi-trending-up"></i></small>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

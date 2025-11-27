@@ -1,0 +1,311 @@
+﻿@typeparam TItem
+@using System.Linq.Expressions
+@using System.Collections.Generic
+
+<div class="blazor-datagrid">
+    <div class="datagrid-controls">
+        <div class="search-container">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">🔍</span>
+                </div>
+                <input type="text" class="form-control search-input" placeholder="Buscar..."
+                       @bind-value="SearchTerm" @bind-value:event="oninput" />
+            </div>
+        </div>
+
+        <div class="page-size-selector">
+            <select class="form-control" @bind="PageSize">
+                <option value="5">5 por página</option>
+                <option value="10">10 por página</option>
+                <option value="25">25 por página</option>
+                <option value="50">50 por página</option>
+                <option value="100">100 por página</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered datagrid-table">
+            <thead>
+                <tr>
+                    @foreach (var column in Columns)
+                    {
+                        <th @onclick="() => SortByColumn(column)" class="@GetColumnHeaderClass(column)">
+                            @column.Title
+                            <span class="sort-icon">
+                                @if (CurrentSortColumn == column.PropertyName)
+                                {
+                                    @(IsAscending ? "▲" : "▼")
+                                }
+                                else
+                                {
+                                    <span class="sort-icon-inactive">⇕</span>
+                                }
+                            </span>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (CurrentPageItems.Any())
+                {
+                    @foreach (var item in CurrentPageItems)
+                    {
+                        <tr>
+                            @foreach (var column in Columns)
+                            {
+                                <td class="@column.CellClass">
+                                    @if (column.CellTemplate != null)
+                                    {
+                                        @column.CellTemplate(item)
+                                    }
+                                    else
+                                    {
+                                        @GetValueForProperty(item, column.PropertyName)
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@Columns.Count()" class="text-center">
+                            No hay datos disponibles
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <DataGridPager TotalItems="FilteredItems.Count()"
+                   PageSize="PageSize"
+                   CurrentPage="CurrentPage"
+                   OnPageChanged="OnPageChanged" />
+</div>
+
+<style>
+    .blazor-datagrid {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .datagrid-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .search-container {
+        width: 300px;
+    }
+
+    .datagrid-table thead th {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        background-color: #f8f9fa;
+        padding-right: 25px !important;
+    }
+
+        .datagrid-table thead th:hover {
+            background-color: #e9ecef;
+        }
+
+    .datagrid-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+    }
+
+        .datagrid-table th, .datagrid-table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+    .sort-icon {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .sort-icon-inactive {
+        opacity: 0.3;
+    }
+
+    .sorted {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = new List<TItem>();
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private List<DataGridColumnInternal<TItem>> Columns { get; set; } = new List<DataGridColumnInternal<TItem>>();
+    private string SearchTerm { get; set; } = string.Empty;
+    private int PageSize { get; set; } = 10;
+    private int CurrentPage { get; set; } = 1;
+    private string CurrentSortColumn { get; set; }
+    private bool IsAscending { get; set; } = true;
+
+    protected override void OnInitialized()
+    {
+        // Si no hay columnas definidas por el usuario, crear columnas automáticamente
+        if (Columns.Count == 0)
+        {
+            GenerateColumnsFromProperties();
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && ChildContent != null)
+        {
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Reset to page 1 whenever the data changes
+        CurrentPage = 1;
+    }
+
+    public void AddColumn(DataGridColumnInternal<TItem> column)
+    {
+        if (!Columns.Any(c => c.PropertyName == column.PropertyName))
+        {
+            Columns.Add(column);
+
+            // Si es la columna por defecto para ordenar
+            if (column.IsDefaultSorted && string.IsNullOrEmpty(CurrentSortColumn))
+            {
+                CurrentSortColumn = column.PropertyName;
+                IsAscending = !column.IsDefaultSortedDescending;
+            }
+        }
+    }
+
+    private void GenerateColumnsFromProperties()
+    {
+        var properties = typeof(TItem).GetProperties();
+        foreach (var prop in properties)
+        {
+            AddColumn(new DataGridColumnInternal<TItem>
+                {
+                    PropertyName = prop.Name,
+                    Title = prop.Name
+                });
+        }
+    }
+
+    private object GetValueForProperty(TItem item, string propertyName)
+    {
+        var property = typeof(TItem).GetProperty(propertyName);
+        if (property == null)
+            return null;
+
+        var value = property.GetValue(item);
+        return value;
+    }
+
+    private string GetColumnHeaderClass(DataGridColumnInternal<TItem> column)
+    {
+        var baseClass = column.HeaderClass ?? string.Empty;
+        if (CurrentSortColumn == column.PropertyName)
+        {
+            return $"{baseClass} sorted";
+        }
+        return baseClass;
+    }
+
+    private IEnumerable<TItem> FilteredItems
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(SearchTerm))
+                return Items;
+
+            return Items.Where(item =>
+                Columns.Any(column =>
+                {
+                    var value = GetValueForProperty(item, column.PropertyName);
+                    return value?.ToString()?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false;
+                }));
+        }
+    }
+
+    private IEnumerable<TItem> SortedItems
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(CurrentSortColumn))
+                return FilteredItems;
+
+            var property = typeof(TItem).GetProperty(CurrentSortColumn);
+            if (property == null)
+                return FilteredItems;
+
+            if (IsAscending)
+                return FilteredItems.OrderBy(item => property.GetValue(item));
+            else
+                return FilteredItems.OrderByDescending(item => property.GetValue(item));
+        }
+    }
+
+    private IEnumerable<TItem> CurrentPageItems
+    {
+        get
+        {
+            return SortedItems
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize);
+        }
+    }
+
+    private void SortByColumn(DataGridColumnInternal<TItem> column)
+    {
+        if (column == null || column.PropertyName == null || !column.Sortable)
+            return;
+
+        if (CurrentSortColumn == column.PropertyName)
+        {
+            IsAscending = !IsAscending;
+        }
+        else
+        {
+            CurrentSortColumn = column.PropertyName;
+            IsAscending = true;
+        }
+
+        CurrentPage = 1;
+        StateHasChanged();
+    }
+
+    private void OnPageChanged(int page)
+    {
+        CurrentPage = page;
+        StateHasChanged();
+    }
+
+    public class DataGridColumnInternal<T>
+    {
+        public string PropertyName { get; set; }
+        public string Title { get; set; }
+        public bool Sortable { get; set; } = true;
+        public bool IsDefaultSorted { get; set; }
+        public bool IsDefaultSortedDescending { get; set; }
+        public string HeaderClass { get; set; }
+        public string CellClass { get; set; }
+        public RenderFragment<T> CellTemplate { get; set; }
+    }
+}

@@ -1,0 +1,160 @@
+﻿@using GDA.Core.Components.Charts
+@using Microsoft.JSInterop
+@using System.Data
+
+@implements IAsyncDisposable
+
+<canvas id="@idCanvas" height="150"></canvas>
+
+@code {
+    private IJSObjectReference? jsModule;
+
+    private bool isInitialized = false;
+
+    private string idCanvas = $"chart-{Guid.NewGuid():N}";
+
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+
+    [Parameter] public ConfigChart? ConfigChart { get; set; }
+
+    // [Parameter]
+    // public EventCallback<ConfigChart?> ConfigChartChanged { get; set; }
+
+    async protected Task InitializeJsModule()
+    {
+        try
+        {
+            if (jsModule == null)
+                jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/components/chartjs/main.js?v=0.14");
+
+            var initialized = await jsModule.InvokeAsync<bool>("initializeChart", idCanvas);
+
+            if (initialized)
+            {
+                isInitialized = true;
+
+                Console.WriteLine("chartjs/main.js initialized successfully");
+
+                if (ConfigChart != null)
+                {
+                    await DrawChart();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Failed to initialize chartjs/main.js");
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al inicializar chartjs/main.js: {ex.Message}");
+        }
+    }
+
+    #region Lifecycle Methods
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitializeJsModule();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InitializeJsModule();
+    }
+
+    #endregion
+
+    private async Task DrawChart()
+    {
+        try
+        {
+            if (jsModule == null)
+            {
+                Console.WriteLine("Módulo JS no inicializado");
+                return;
+            }
+
+            if (ConfigChart == null)
+            {
+                Console.WriteLine("No hay configuración de gráfico");
+                return;
+            }
+            await jsModule.InvokeVoidAsync("drawChart", idCanvas, ConfigChart);
+
+            Console.WriteLine($"Gráfico dibujado exitosamente en canvas: {idCanvas}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al dibujar el gráfico: {ex.Message}");
+        }
+    }
+
+    public async Task UpdateChart(ConfigChart newConfig)
+    {
+        try
+        {
+            if (jsModule != null && isInitialized)
+            {
+                ConfigChart = newConfig;
+                await jsModule.InvokeVoidAsync("updateChart", idCanvas, newConfig);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al actualizar el gráfico: {ex.Message}");
+        }
+    }
+
+    public async Task DestroyChart()
+    {
+        try
+        {
+            if (jsModule != null && isInitialized)
+            {
+                await jsModule.InvokeVoidAsync("destroyChart", idCanvas);
+                Console.WriteLine($"Gráfico destruido: {idCanvas}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al destruir el gráfico: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await DestroyChart();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al destruir gráfico en dispose: {ex.Message}");
+        }
+
+        if (jsModule != null)
+        {
+            try
+            {
+                await jsModule.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // Ignorar errores de desconexión
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al disponer módulo JS: {ex.Message}");
+            }
+        }
+    }
+
+}

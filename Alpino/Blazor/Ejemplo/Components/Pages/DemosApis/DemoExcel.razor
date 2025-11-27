@@ -1,0 +1,57 @@
+﻿@page "/demos-excel"
+@using System.Data
+@using Ejemplo
+@using Ejemplo.Components
+@using Notions.Core.Utils.ExcelAPIClient.Services
+
+<h3>Exportar a excel</h3>
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<button class="btn btn-primary" @onclick="OnExportar">Exportar a Excel ejemplo</button>
+
+@code {
+    [Inject] ExcelNoDTOClientService _exportarExcelService { get; set; } = default!;
+
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    async protected Task<Stream> GetFileStream()
+    {
+        DataTable dt = (await GetAll()).Tables[0];
+        var randomBinaryData = await _exportarExcelService.ExportarAExcelByteArrayAsync(dt);
+        var fileStream = new MemoryStream(randomBinaryData);
+
+        return fileStream;
+    }
+
+    async public Task OnExportar()
+    {        
+        try
+        {
+            var fileStream = await GetFileStream();
+            var fileName = "prueba.xls";
+
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    async protected Task<DataSet> GetAll()
+    {
+        DataSet dataSet = new DataSet();
+        DataTable dataTable = new DataTable("DemoExcel");
+        dataTable.Columns.Add("Id", typeof(int));
+        dataTable.Columns.Add("Nombre", typeof(string));
+        dataSet.Tables.Add(dataTable);
+
+        dataTable.Rows.Add(1, "Juan");
+        dataTable.Rows.Add(2, "Pedro");
+        return dataSet;
+    }
+}

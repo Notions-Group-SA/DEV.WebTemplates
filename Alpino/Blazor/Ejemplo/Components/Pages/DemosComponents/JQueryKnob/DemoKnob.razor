@@ -1,0 +1,76 @@
+﻿@page "/demo-knob-component"
+
+@using System.Data
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components.Charts
+@using GDA.Core.Components.Knob
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<h3>Demo Knobs</h3>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+
+            <div class="col-lg-6 col-md-12">
+
+                <div class="card">
+                    <div class="header">
+                        <button class="btn btn-primary" @onclick="OnMostrarEjemploLineChart">Generar</button>
+                    </div>
+                    <div class="body">
+                        <JQueryKnob Value="@Valor" Width="125" Height="125" Thickness="0.25" FgColor="#ff598f" />
+                    </div>
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <InputCheckbox id="input" @bind-Value="@verCard" @bind-Value:after="OnVerCard" />
+                            <label for="input">&nbsp;Visualizar</label>
+                        </div>
+                    </div>
+
+                    @if (verCard)
+                    {
+                        <div class="card">
+                            <div class="body">
+                                <JQueryKnob @bind-Value="Valor" Width="125" Height="125" Thickness="0.25" FgColor="#ff598f" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    int Valor { get; set; } = 50;
+    bool verCard { get; set; }
+
+    async protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.CompletedTask;
+    }  
+
+    async protected Task OnMostrarEjemploLineChart()
+    {
+        Valor = 40;
+
+        StateHasChanged();
+
+        await Task.CompletedTask;
+    }
+
+    async protected Task OnVerCard()
+    { 
+        await Task.CompletedTask;
+    }
+
+}
+

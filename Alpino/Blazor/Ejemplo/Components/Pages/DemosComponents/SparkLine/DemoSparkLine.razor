@@ -1,0 +1,72 @@
+﻿@page "/demo-sparkLine"
+
+@using System.Data
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components.SparkLine
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<h3>Demo SparkLine</h3>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <div class="heard">
+                        <button class="btn btn-primary" @onclick="OnVer">@btnLabelVer</button>
+                    </div>
+                    @if (esVisible)
+                    {
+                        <div class="body">
+                            <SparkLine Valores="@valores" />
+                            <h3 class="m-b-0">457 512</h3>
+                            <small class="displayblock">Prueba<i class="zmdi zmdi-trending-up"></i></small>
+                        </div>
+                    }
+                </div>
+
+                <div class="card">
+                    <div class="heard">
+                    </div>
+                    <div class="head">
+                        <button class="btn btn-primary" @onclick="OnCambiar">Actualizar valores</button>
+                    </div>
+                    <div class="body">
+                        <SparkLine @bind-Valores="valores" BarColor="#9900FF" />
+                        <h3 class="m-b-0">457 512</h3>
+                        <small class="displayblock">Prueba<i class="zmdi zmdi-trending-up"></i></small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@code {
+    string btnLabelVer = "Ver Sparkline";
+    bool esVisible = false;
+    void OnVer()
+    {
+        esVisible = !esVisible;
+
+        if(esVisible)
+            btnLabelVer = "Ver";
+        else
+            btnLabelVer = "Ocultar";
+
+    }
+
+    int[] valores = new int[] { 2, 6, 8, 9, 8, 6, 2 };
+
+    void OnCambiar()
+    {
+        valores = new int[] { 9, 8, 3, 2, 38, 8, 9 };
+    }
+
+}
+

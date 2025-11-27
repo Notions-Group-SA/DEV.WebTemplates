@@ -1,0 +1,43 @@
+﻿@page "/ejemplo-select"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<h3>EjemploComboBox</h3>
+
+<div class="col-12">
+    <div class="card">
+        <div class="body">
+            <div class="form-group">
+                <select @bind="viewModel.IdLocalidad" @bind:after="OnOpcionChanged" class="form-select">
+                    <option value="0">Elija una opción</option>
+                    @foreach (var vm in viewModels)
+                    {
+                        <option value="@vm.IdLocalidad">@vm.Descripcion</option>
+                    }
+                </select>
+                <label>@viewModel.Descripcion</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ViewModel viewModel = new ViewModel();
+    private List<ViewModel> viewModels = new List<ViewModel>
+    {
+        new ViewModel { IdLocalidad = 1, Descripcion = "uno" },
+        new ViewModel { IdLocalidad = 2, Descripcion = "dos" },
+        new ViewModel { IdLocalidad = 3, Descripcion = "tres" }
+    };
+
+    private void OnOpcionChanged()
+    {
+        viewModel.Descripcion = (from vm in viewModels where vm.IdLocalidad == viewModel.IdLocalidad select vm.Descripcion).FirstOrDefault();
+    }
+
+    class ViewModel
+    {
+        public int? IdLocalidad { get; set; }
+        public string? Descripcion { get; set; }
+    }
+}

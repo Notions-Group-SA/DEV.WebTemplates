@@ -1,0 +1,81 @@
+﻿@page "/demo-quill-focus-out"
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components.Quill
+
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+<h3>Demo Quill Anidado</h3>
+
+<div class="col-12">
+
+    <div class="card col-12">
+        <div class="card-header">
+            <h3>Entrada de texto inicial</h3>
+        </div>
+        <div class="card-body">
+            <InputText class="form-control" @bind-Value="contents"></InputText>
+        </div>
+
+        <div class="form-group">
+            <InputCheckbox for="chkQuill" class="form-check-input" @bind-Value="EsVisible">Hacer visible</InputCheckbox>
+            <label id="chkQuill" class="form-label">Mostrar QUILL</label>
+        </div>
+    </div>
+
+    @if (EsVisible)
+    {
+        <div class="card col-12">
+            <div class="card-body">
+                <Quill @ref="quillNote" @bind-Contents="contents"></Quill>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card col-12">
+            <div class="card-body">
+                @((MarkupString)contents)
+            </div>
+        </div>
+          
+    }
+
+    <div class="card col-12">
+        <div class="card-body">
+            @((MarkupString)contents)
+        </div>
+    </div>
+</div>
+
+@code {
+    Quill quillNote;
+
+    private bool esVisible = true;
+    bool EsVisible
+    {
+        get
+        {
+            return esVisible;
+        }
+        set
+        {
+            if (value == false)
+            {
+                quillNote?.GetContents().ContinueWith(task =>
+                {
+                    if (task.Status == TaskStatus.RanToCompletion)
+                    {
+                        contents = task.Result;
+                        InvokeAsync(StateHasChanged);
+                    }
+                });
+
+            }
+            esVisible = value;
+        }
+    }
+
+    string contents;
+}

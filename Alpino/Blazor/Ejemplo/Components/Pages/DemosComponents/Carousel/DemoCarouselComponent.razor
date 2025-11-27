@@ -1,0 +1,59 @@
+﻿@page "/demo-carousel-component"
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components.Carousel
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<Carousel Slides="@slides" />
+
+@code
+{
+    private List<SlideViewModel> slides = new List<SlideViewModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        slides = GetSlides();
+        await Task.CompletedTask;
+    }
+
+    #region Data
+    private List<SlideViewModel> GetSlides()
+    {
+        return new List<SlideViewModel>
+        {
+            new SlideViewModel
+            {
+                Numero = 1,
+                Id = "ngc-1-s1",
+                Previo = "ngc-1-s3", // Último slide
+                Siguiente = "ngc-1-s2",
+                Titulo = "Municipio de Zárate",
+                Descripcion = "Un municipio de buena gente!",
+                ImageUrl = "img/slide1.png"
+            },
+            new SlideViewModel
+            {
+                Numero = 2,
+                Id = "ngc-1-s2",
+                Previo = "ngc-1-s1",
+                Siguiente = "ngc-1-s3",
+                Titulo = "Municipio de Tres Arroyos",
+                Descripcion = "Un municipio de buenas personas!",
+                ImageUrl = "img/slide2.png"
+            },
+            new SlideViewModel
+            {
+                Numero = 3,
+                Id = "ngc-1-s3",
+                Previo = "ngc-1-s2",
+                Siguiente = "ngc-1-s1", // Primer slide
+                Titulo = "Municipio de Esperanza",
+                Descripcion = "Un municipio de buenos seres humanos!",
+                ImageUrl = "img/slide3.png"
+            }
+        };
+    }
+    #endregion
+}

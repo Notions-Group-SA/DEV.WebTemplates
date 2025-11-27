@@ -1,0 +1,96 @@
+﻿@page "/configuraciones"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@attribute [StreamRendering]
+
+<!-- Modal -->
+<style>
+    .custom-switch {
+        transform: scale(1.2);
+    }
+
+    .list-item {
+        transition: all 0.3s ease;
+    }
+
+    .list-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .form-check-input:disabled {
+        opacity: 0.5;
+    }
+
+    .form-check-input:disabled + label,
+    .list-item:has(.form-check-input:disabled) {
+        opacity: 0.6;
+    }
+</style>
+<div class="modal fade @(showModal ? "show" : "")" id="switchModal"
+     style="display: @(showModal ? "block" : "none")" tabindex="-1" aria-hidden="@(!showModal)">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-sliders-h me-2"></i>
+                    Configuraciones de Notificaciones
+                </h5>
+                <button type="button" style="background: none; border: none; box-shadow: none; padding: 0;"  class="btn-close" @onclick="CerrarModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-body p-0">             
+
+                <!-- Sección: Estados -->
+                <div class="px-3 py-2 bg-light border-bottom mt-3">
+                    <small class="text-muted fw-bold">Estado de los Tickets</small>
+                </div>
+                <div class="list-group list-group-flush">
+                    @if (ConfiguracionesUsuario!=null)
+                    {                     
+                        @foreach (var config in ConfiguracionesUsuario)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center list-item">
+                                <div>
+                                     <span class="fw-medium">@config.Name</span>
+                                    <small class="d-block text-muted">@config.Description</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           role="switch"
+                                           id="@config.Id"
+                                           checked="@config.IsEnabled"
+                                           disabled="@(config.Id != 0 && esTodosSeleccionado)"
+                                           @onchange="@(e => OnSwitchChanged(config.Id, (bool)e.Value))">
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>              
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CerrarModal">
+                    <i class="fas fa-times me-1"></i>
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" @onclick="GuardarConfiguracion">
+                    <i class="fas fa-save me-1"></i>
+                    Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Backdrop -->
+@if (showModal)
+{
+    <div class="modal-backdrop fade show" @onclick="CerrarModal"></div>
+}
+

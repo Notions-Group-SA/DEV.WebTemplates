@@ -1,0 +1,87 @@
+﻿@page "/demo-select2"
+
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<h3>Demo select2</h3>
+
+<div class="row mb-4">
+
+    <div class="col-md-6">
+        <Select2 TItem="ColorViewModel"
+                Items="categorias"
+                @bind-SelectedItem="colorSelected"
+                @bind-SelectedItem:after="Prueba"
+                TextSelector="color => color.Descripcion"
+                ValueSelector="color => color.Id"
+                Label="Colores"
+                SearchPlaceholder="Buscar color..."
+                EmptyText="Seleccionar un color"
+                AllowCreate="true"
+                CreateItemFunc="CreateColor" />
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            @if (colorSelected != null)
+            {
+                <div class="card-body">
+                    <strong>Color seleccionado:</strong> @colorSelected.Descripcion (ID: @colorSelected.Id)
+                </div>
+            }
+            else
+            {
+                <div class="card-body text-muted">
+                    Seleccionar color
+                </div>
+            }
+        </div>
+    </div>
+
+    <div>
+        @mensaje
+    </div>
+</div>
+
+@code {
+    string mensaje = "";
+
+    ColorViewModel? colorSelected;
+    List<ColorViewModel> categorias = new List<ColorViewModel>
+    {
+        new ColorViewModel { Id = 1, Descripcion = "Blanco" },
+        new ColorViewModel { Id = 2, Descripcion = "Rojo" },
+        new ColorViewModel { Id = 3, Descripcion = "Azul" },
+        new ColorViewModel { Id = 4, Descripcion = "Verde" },
+        new ColorViewModel { Id = 5, Descripcion = "Amarillo" },
+        new ColorViewModel { Id = 6, Descripcion = "Negro" },
+        new ColorViewModel { Id = 7, Descripcion = "Rosa" },
+        new ColorViewModel { Id = 8, Descripcion = "Morado" },
+        new ColorViewModel { Id = 9, Descripcion = "Naranja" },
+        new ColorViewModel { Id = 10, Descripcion = "Café" }
+    };
+
+    async private void Prueba()
+    {
+        await Task.CompletedTask;
+        mensaje = $"Seleccionaste el color: {colorSelected?.Descripcion} (ID: {colorSelected?.Id})";
+    }
+
+    ColorViewModel CreateColor(string descripcion)
+    {
+        var newId = categorias.Max(c => c.Id) + 1;
+        return new ColorViewModel { Id = newId, Descripcion = descripcion };
+    }
+
+    #region view models
+    public class ColorViewModel
+    {
+        public int Id { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
+    }
+    #endregion
+}

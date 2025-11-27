@@ -1,0 +1,210 @@
+﻿@page "/Modelo"
+
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components
+@using Microsoft.AspNetCore.Authorization
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+
+<!-- Estilo para card no hay cosas -->
+<style>
+    .aviso-reclamos {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 15px;
+        font-family: system-ui, sans-serif;
+    }
+
+        .aviso-reclamos .card {
+            text-align: center;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 18px;
+            padding: 30px 25px 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            color: #111;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .aviso-reclamos .icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(117,192,154,0.25), rgba(117,192,154,0.15));
+            margin-left: auto;
+            margin-right: auto;
+            animation: aviso-reclamos-flotar 3s ease-in-out infinite;
+        }
+
+            .aviso-reclamos .icon svg {
+                width: 32px;
+                height: 32px;
+                color: #75C09A;
+            }
+
+    @@keyframes aviso-reclamos-flotar {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-4px);
+        }
+    }
+
+    .aviso-reclamos h1 {
+        margin: 0 0 6px;
+        font-size: 1.5rem;
+        color: #111;
+    }
+
+    .aviso-reclamos p {
+        margin: 0 0 20px;
+        color: #444;
+        font-size: 0.95rem;
+    }
+
+    .aviso-reclamos .acciones {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .aviso-reclamos .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .aviso-reclamos .btn.recargar {
+            background: linear-gradient(135deg, #75C09A, #93D5B4);
+            color: #fff;
+        }
+
+            .aviso-reclamos .btn.recargar:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(117,192,154,0.4);
+            }
+
+        .aviso-reclamos .btn.volver {
+            background: transparent;
+            color: #111;
+            border: 1px gba(0,0,0,0.25);
+        }
+
+            .aviso-reclamos .btn.volver:hover {
+                background: rgba(117,192,154,0.1);
+            }
+</style>
+
+<!-- Card no hay cosas -->
+
+<div class="aviso-reclamos">
+    <div class="card">
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <path d="M22 4 12 14.01l-3-3" />
+            </svg>
+        </div>
+        <h1>Sin reclamos</h1>
+        <p>No encontramos nuevos reclamos para mostrar en este momento.</p>
+        <div class="acciones">
+            <button class="btn recargar" onclick="location.reload()">Recargar</button>
+            <button class="btn volver" onclick="history.back()">Volver</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modelo de volver -->
+<div class="col-12">
+    <button href="#" class="btn btn-link text-decoration-none" disabled="@isProcessing">
+        <i class="fas fa-chevron-left"></i>  Volver a documentos
+    </button>
+</div>
+
+<!-- Modelo de header -->
+<div class="row clearfix">
+
+    <div id="call-to-action" class="col-12">
+        <div class="card mb-0">
+            <div class="header d-flex flex-column flex-sm-column flex-md-row flex-lg-row justify-content-between align-items-center">
+                <div class="col-lg-2 d-none d-md-block">
+                    <img src="assets/images/image-gallery/verde/reclamo2.png" />
+                </div>
+                <div class="col-sm-12 col-lg-10 p-0">
+                    <h2><strong class="font-20">Búsqueda de ciudadano</strong></h2>
+                    <p class="text-muted">
+                        Podés buscar por Cuit, Dni o nombre y apellido de la persona que necesitas identificar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modelo de placeHolder -->
+@if (isLoading)
+{
+    <div class="col-lg-3 text-center" style="mix-blend-mode: color-burn;">
+        <div>
+            <div class="ngplaceholder ngplaceholder-label"></div>
+            <div class="ngplaceholder ngplaceholder-text"></div>
+
+            <div class="ngplaceholder ngplaceholder-label"></div>
+            <div class="ngplaceholder ngplaceholder-text"></div>
+
+        </div>
+    </div>
+}
+
+
+<!-- Modelo de boton con "procesando" (En el evento que se ejecurte hay que poner un delat) -->
+@if (isProcessing)
+{
+    <button class="btn btn-round btn-info flex-shrink-0" disabled="@isProcessing">
+        <i class="fas fa-spinner spinner-border spinner-border-sm mr-2"></i> <span>procesando</span>
+    </button>
+}
+else
+{
+    <button class="btn btn-round btn-info flex-shrink-0" disabled="@isProcessing">
+        <i class="far fa-calendar mr-2"></i><span>Actualizar</span>
+    </button>
+}
+
+
+<!-- Modelo para mostrar una ventana de negación -->
+<div class="card">
+
+    <div class="body">
+
+        <div class="col-12 text-center">
+
+            <img src="assets/images/negacion.png" style="width:450px" />
+
+            <h2>No se encontraron datos.</h2>
+
+            <p>No se encontraron apoderados asociados a este comercio.</p>
+
+        </div>
+
+    </div>
+
+</div>

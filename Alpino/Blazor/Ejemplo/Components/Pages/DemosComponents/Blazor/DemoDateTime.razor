@@ -1,0 +1,22 @@
+﻿@page "/demo-datetime"
+<h3>DateTime</h3>
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<div>
+    <div class="card">
+        <div class="body">
+            <div class="row">
+                <label>Fecha de inicio:</label>
+                <div class="col-4">
+                    <InputDate @bind-Value="dateTimeValue" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    DateTime? dateTimeValue { get; set; } = DateTime.Now; // Cambio: Today en lugar de Now
+}

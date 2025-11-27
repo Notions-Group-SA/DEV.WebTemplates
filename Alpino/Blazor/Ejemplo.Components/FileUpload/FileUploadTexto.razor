@@ -1,0 +1,142 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+<div class="col">
+    @try
+    {
+        <div class="mb-4">
+            <div class="upload-card border border-2 border-dashed rounded p-5 text-center bg-light">
+                <div class="mb-3">
+                    <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="text-secondary mb-2">@* Arrastra archivos aquí o *@ Haz clic para seleccionar</h5>
+                <p class="text-muted mb-4">Máximo 10MB por archivo</p>
+
+                
+                <label class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm">
+                    <i class="fas fa-file-upload me-2"></i> Seleccionar archivos
+                    <InputFile key="@inputFileKey"
+                               OnChange="HandleFilesSelection"
+                               multiple
+                               accept=".pdf,.jpg,.jpeg"
+                               style="display:none" />
+                </label>
+            </div>
+        </div> 
+       
+        @if (selectedFiles.Count > 0)
+        {
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <h6 class="mb-0 text-primary">
+                                <i class="fas fa-paperclip me-2"></i>
+                                Archivos seleccionados (@selectedFiles.Count)
+                            </h6>
+                        </div>
+
+                        @for (int i = 0; i < selectedFiles.Count; i++)
+                        {
+                            var file = selectedFiles[i];
+                            var index = i;
+
+                            <div class="card mb-3">
+                                <div class="body">
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-auto">
+                                            <div class="text-center text-primary">
+                                                <i class="@GetFileIcon(file.File.Name)" style="font-size: 2rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h6 class="mb-1 fw-bold text-dark">@file.File.Name</h6>
+                                            <small class="text-muted">@FormatFileSize(file.File.Size)</small>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button @onclick="() => RemoveFile(file.Name)"
+                                                    class="btn btn-simple btn-danger  btn-icon  btn-icon-mini btn-round"
+                                                    title="Eliminar Documento">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-3 rounded">
+                                        <label class="form-label fw-semibold mb-2">
+                                            <i class="fas fa-align-left me-1 text-primary"></i>
+                                            Descripción (opcional)
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white">
+                                                <i class="fas fa-edit text-muted"></i>
+                                            </span>
+                                            <textarea class="form-control"
+                                                      rows="2"
+                                                      placeholder="Agrega una descripción para este archivo..."
+                                                      @bind="file.Description"
+                                                      @oninput="@((e) => UpdateFileDescription(index, e.Value?.ToString()))"
+                                                      maxlength="200"></textarea>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(file.Description))
+                                        {
+                                            <div class="text-end mt-1">
+                                                <small class="text-muted">@(file.Description.Length)/200 caracteres</small>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                   
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert @(message.Contains("Error") ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+                <i class="fas @(message.Contains("Error") ? "fa-exclamation-triangle" : "fa-check-circle") me-2"></i>
+                @message
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TieneVencimiento)
+        {
+            <div class="card border border-danger ">
+                <div class="body">
+                    <div class="row align-items-center g-3">
+                        <div class="col-auto">
+                            <label class="form-label mb-0 fw-semibold">
+                                Fecha de Vencimiento: <span class="text-danger">*</span>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <InputDate class="form-control shadow-sm"
+                                       @bind-Value="FechaVencimiento"
+                                       @bind-Value:after="NotificarCambio"
+                                       required />
+                        </div>
+                    </div>
+                    
+                    @if (mostrarErrorFecha)
+                    {
+                        <div class="alert alert-danger mt-3 mb-0" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <small>La fecha de vencimiento es requerida.</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    catch (Exception ex)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Error:</strong> @ex.Message
+        </div>
+    }
+</div>

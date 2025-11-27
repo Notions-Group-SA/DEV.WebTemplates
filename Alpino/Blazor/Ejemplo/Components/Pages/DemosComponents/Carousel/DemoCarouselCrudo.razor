@@ -1,0 +1,89 @@
+﻿@page "/demo-carousel-crudo"
+<h3>DemoCarouselCrudo</h3>
+
+<section class="ng-carousel" id="ngc-1"
+         style="--ng-max-width: 1024px; --ng-aspect-ratio: 21/9; --ng-duration: 4s; --ng-steps: 3; --ng-dot-w: 28px; --ng-dot-h: 5px; --ng-dot-radius: 999px; --ng-dot-color: red; --ng-dot-bg: rgba(255,255,255,.4);">
+
+    <div class="ngc-viewport">
+        <header class="ngc-header">
+            <h3 class="ngc-header-title">Título del carrusel</h3>
+            <p class="ngc-header-desc">Descripción breve del carrusel, alineada a la izquierda.</p>
+        </header>
+        <div class="ngc-slide" id="ngc-1-s1">
+        </div>
+        <div class="ngc-slide" id="ngc-1-s2">
+            <div class="ngc-grad" style="background: linear-gradient(135deg, #0ea5e9, #6366f1);"></div>
+        </div>
+        <div class="ngc-slide" id="ngc-1-s3">
+            <div class="ngc-grad" style="background: linear-gradient(135deg, #10b981, #22d3ee);"></div>
+        </div>
+
+        <nav class="ngc-arrows">
+            <div class="for-auto">
+                <a class="ngc-arrow prev" href="/demo-carousel-crudo#ngc-1-s3" aria-label="Prev">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a class="ngc-arrow next" href="/demo-carousel-crudo#ngc-1-s2" aria-label="Next">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+            <div class="for-s1">
+                <a class="ngc-arrow prev" href="/demo-carousel-crudo#ngc-1-s3" aria-label="Prev">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a class="ngc-arrow next" href="#ngc-1-s2" aria-label="Next">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+            <div class="for-s2">
+                <a class="ngc-arrow prev" href="/demo-carousel-crudo#ngc-1-s1" aria-label="Prev">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a class="ngc-arrow next" href="/demo-carousel-crudo#ngc-1-s3" aria-label="Next">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+            <div class="for-s3">
+                <a class="ngc-arrow prev" href="/demo-carousel-crudo#ngc-1-s2" aria-label="Prev">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a class="ngc-arrow next" href="/demo-carousel-crudo#ngc-1-s1" aria-label="Next">
+                    <svg class="ngc-arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+        </nav>
+
+        <div class="ngc-dots">
+            <a href="/demo-carousel-crudo#ngc-1-s1" aria-label="Slide 1"></a>
+            <a href="/demo-carousel-crudo#ngc-1-s2" aria-label="Slide 2"></a>
+            <a href="/demo-carousel-crudo#ngc-1-s3" aria-label="Slide 3"></a>
+        </div>
+    </div>
+</section>
+
+<section style="margin-top:2rem; max-width:960px;">
+    <p>Configurable por variables CSS:</p>
+    <ul>
+        <li><code>--ng-max-width</code> (ancho máximo)</li>
+        <li><code>--ng-aspect-ratio</code> (relación de aspecto)</li>
+        <li><code>--ng-duration</code> (tiempo por slide)</li>
+        <li><code>--ng-steps</code> (cantidad de slides)</li>
+        <li><code>--ng-dot-size</code> / <code>--ng-dot-color</code> / <code>--ng-dot-bg</code> (dots)</li>
+    </ul>
+</section>

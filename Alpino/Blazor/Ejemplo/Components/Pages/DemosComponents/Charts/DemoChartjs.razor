@@ -1,0 +1,126 @@
+﻿@page "/demo-chartjs"
+@using System.Data
+@using Ejemplo
+@using Ejemplo.Components
+@using GDA.Core.Components.Charts
+
+<p>Ejemplo usando el component chart</p>
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<h3>Demo Chartjs</h3>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+
+            @* line chart *@
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+
+                    <div class="body">
+                        <Chart ConfigChart="dataChart1"/>
+                    </div>
+                </div>
+            </div>
+
+            @* bar chart *@
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+
+                    <div class="body">
+                        <Chart ConfigChart="dataChart2" />
+                    </div>
+                </div>
+            </div>
+
+            @* doughnu chart *@
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+
+                    <div class="body">
+                        <Chart ConfigChart="dataChart3" />
+                    </div>
+                </div>
+            </div>
+
+            @* Area polar chart *@
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+
+                    <div class="body">
+                        <Chart ConfigChart="dataChart4" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    ConfigChart? dataChart1 = new ();
+    ConfigChart? dataChart2 = new ();
+    ConfigChart? dataChart3 = new ();
+    ConfigChart? dataChart4 = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        #region ejemplo 1
+        DataTable dt1 = EjemploConsulta();
+        dataChart1 = new ConfigChart(dt1, "Titulo Ejemplo 1: line", "Label", "Data");
+        dataChart1.type = ChartType.line.ToString();
+        #endregion
+
+        #region ejemplo 2
+        DataTable dt2 = EjemploConsulta();
+        dataChart2 = new ConfigChart(dt1, "Titulo Ejemplo 2: bar", "Label", "Data");
+        dataChart2.type = ChartType.bar.ToString();
+        #endregion
+
+        #region ejemplo 3
+        DataTable dt3 = EjemploConsulta();
+        dataChart3 = new ConfigChart(dt1, "Titulo Ejemplo 3: Doughnu", "Label", "Data");
+        dataChart3.type = ChartType.doughnut.ToString();
+        #endregion
+
+        #region ejemplo 4
+        DataTable dt4 = EjemploConsulta();
+        dataChart4 = new ConfigChart(dt1, "Titulo Ejemplo 4: Area Polar", "Label", "Data");
+        dataChart4.type = ChartType.polarArea.ToString();
+        #endregion
+
+        await Task.CompletedTask;
+    }
+
+    async protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.CompletedTask;
+        }
+    }
+
+    #region ejemplos
+    protected DataTable EjemploConsulta()
+    {
+        DataTable dt = new DataTable();
+
+        List<string> labels = new List<string> { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio" };
+        List<int> data = new List<int> { 28, 58, 39, 45, 30, 55, 68 };
+        
+        dt.Columns.Add("Label", typeof(string));
+        dt.Columns.Add("Data", typeof(int));
+
+        for(int n =0; n< data.Count; n++)
+        {
+            dt.Rows.Add(labels[n], data[n] );
+        }
+
+        return dt;
+    }
+    #endregion
+}
+
+    
