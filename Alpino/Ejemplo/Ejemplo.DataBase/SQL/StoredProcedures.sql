@@ -261,13 +261,16 @@ FROM [lut_Periodos]
 WHERE [Id] = @Id
 GO
 
+
+
+
 	DROP PROCEDURE IF EXISTS [dbo].[Ejemplosys_Usuarios_Insert]
 GO
 
 CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_Insert]
 (
-	@Usuarios varchar(50)
-,	@Clave nchar(10)
+	@Usuario nchar(50)
+,	@Clave nchar(100)
 ,	@Activo bit
 ,	@Usuario_Alta varchar(50)
 )
@@ -278,14 +281,14 @@ SET NOCOUNT ON
 
 INSERT INTO [sys_Usuarios]
 (
-	[Usuarios]
+	[Usuario]
 	, [Clave]
 	, [Activo]
 	, [Usuario_Alta]
 )
 VALUES
 (
-	@Usuarios
+	@Usuario
 	, @Clave
 	, @Activo
 	, @Usuario_Alta
@@ -297,8 +300,8 @@ GO
 
 CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_Update]
 (
-	@Usuarios varchar(50),
-	@Clave nchar(10),
+	@Usuario nchar(50),
+	@Clave nchar(100),
 	@Activo bit,
 	@Usuario_Modificacion varchar(50)
 )
@@ -312,7 +315,7 @@ SET [Clave] = @Clave,
 	[Activo] = @Activo,
 	[Fecha_Modificacion] = Getdate(),
 	[Usuario_Modificacion] = @Usuario_Modificacion
-WHERE [Usuarios] = @Usuarios
+WHERE [Usuario] = @Usuario
 GO
 
 
@@ -321,7 +324,7 @@ GO
 
 CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_Delete]
 (
-	@Usuarios varchar(50)
+	@Usuario nchar(50)
 )
 
 AS
@@ -329,7 +332,7 @@ AS
 SET NOCOUNT ON
 
 UPDATE sys_Usuarios SET Activo = 0
-WHERE [Usuarios] = @Usuarios
+WHERE [Usuario] = @Usuario
 GO
 
 	DROP PROCEDURE IF EXISTS [dbo].[Ejemplosys_Usuarios_Get]
@@ -337,7 +340,7 @@ GO
 
 CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_Get]
 (
-	@Usuarios varchar(50)
+	@Usuario nchar(50)
 )
 
 AS
@@ -345,7 +348,7 @@ AS
 SET NOCOUNT ON
 
 SELECT * FROM [sys_Usuarios]
-WHERE [Usuarios] = @Usuarios
+WHERE [Usuario] = @Usuario
 
 GO
 
@@ -396,12 +399,12 @@ FROM [sys_Usuarios]
 WHERE [Activo] = @Activo
 GO
 
-DROP PROCEDURE IF EXISTS [dbo].[Ejemplosys_Usuarios_GetBy_Usuarios]
+DROP PROCEDURE IF EXISTS [dbo].[Ejemplosys_Usuarios_GetBy_Usuario]
 GO
 
-CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_GetBy_Usuarios]
+CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_GetBy_Usuario]
 (
-	@Usuarios varchar(50)
+	@Usuario nchar(50)
 )
 
 AS
@@ -409,16 +412,16 @@ AS
 SET NOCOUNT ON
 
 SELECT * FROM [sys_Usuarios]
-WHERE [Usuarios] = @Usuarios
+WHERE [Usuario] = @Usuario
 
 GO
 
-	DROP PROCEDURE IF EXISTS [dbo].[Ejemplosys_Usuarios_GetBy_Usuarios_Cantidad]
+	DROP PROCEDURE IF EXISTS [dbo].[Ejemplosys_Usuarios_GetBy_Usuario_Cantidad]
 GO
 
-CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_GetBy_Usuarios_Cantidad]
+CREATE PROCEDURE [dbo].[Ejemplosys_Usuarios_GetBy_Usuario_Cantidad]
 (
-	@Usuarios varchar(50)
+	@Usuario nchar(50)
 )
 
 AS
@@ -427,5 +430,5 @@ SET NOCOUNT ON
 
 SELECT COUNT(*) Cantidad
 FROM [sys_Usuarios]
-WHERE [Usuarios] = @Usuarios
+WHERE [Usuario] = @Usuario
 GO

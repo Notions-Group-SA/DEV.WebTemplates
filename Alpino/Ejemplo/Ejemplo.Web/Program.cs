@@ -1,6 +1,4 @@
 using Ejemplo.DataManager;
-
-using GDA.Core.DataManager.Models;
 using Ejemplo.Utils;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -52,7 +50,7 @@ builder.Services.AddSingleton(new NgRandom());
 
 #region entidades del datatier
 builder.Services.AddSingleton(new LutParametrosDataManager());
-builder.Services.AddSingleton(new LutPeriodosDataManager());
+builder.Services.AddSingleton<LutPeriodosDataManager>();
 builder.Services.AddSingleton(new SysUsuariosDataManager());
 #endregion
 

@@ -26,9 +26,9 @@ public abstract class SysUsuariosAbstract
 		return true;
 	}
 
-	public async Task<Boolean> DeleteAsync(String usuarios, SqlTransaction? sqlTransaction = null)
+	public async Task<Boolean> DeleteAsync(String usuario, SqlTransaction? sqlTransaction = null)
 	{
-		await _dbManager.DeleteAsync(sqlTransaction, usuarios);
+		await _dbManager.DeleteAsync(sqlTransaction, usuario);
 		return true;
 	}
 
@@ -43,9 +43,9 @@ public abstract class SysUsuariosAbstract
 		return [.. Rows.Cast<DataRow>().Select(row => new SysUsuariosModel(row))];
 	}
 
-	public async Task<SysUsuariosModel?> GetOneAsync(String usuarios)
+	public async Task<SysUsuariosModel?> GetOneAsync(String usuario)
 	{
-		DataRowCollection Rows = (await _dbManager.GetAsync(usuarios)).Tables[0].Rows;
+		DataRowCollection Rows = (await _dbManager.GetAsync(usuario)).Tables[0].Rows;
 
 		if (Rows.Count <= 0)
 			return null;
@@ -71,21 +71,21 @@ public abstract class SysUsuariosAbstract
 		return Int64.Parse(dt.Rows[0]["Cantidad"]?.ToString() ?? throw new NullReferenceException("Tabla sin datos"));
 	}
 
-	public async Task<DataSet> GetByUsuariosAsync(String usuarios)
+	public async Task<DataSet> GetByUsuarioAsync(String usuario)
 	{
-		return await _dbManager.GetByAsync("Usuarios", usuarios);
+		return await _dbManager.GetByAsync("Usuario", usuario);
 	}
 
-	public async Task<List<SysUsuariosModel>> GetListByUsuariosAsync(String usuarios)
+	public async Task<List<SysUsuariosModel>> GetListByUsuarioAsync(String usuario)
 	{
-		DataRowCollection Rows = (await this.GetByUsuariosAsync(usuarios)).Tables[0].Rows;
+		DataRowCollection Rows = (await this.GetByUsuarioAsync(usuario)).Tables[0].Rows;
 		return [.. Rows.Cast<DataRow>().Select(row => new SysUsuariosModel(row))];
 	}
 
-	public async Task<Int64> GetByUsuariosCantidadAsync(String usuarios)
+	public async Task<Int64> GetByUsuarioCantidadAsync(String usuario)
 	{
 
-		DataTable dt = (await _dbManager.GetByAsync("Usuarios_Cantidad", usuarios)).Tables[0];
+		DataTable dt = (await _dbManager.GetByAsync("Usuario_Cantidad", usuario)).Tables[0];
 		return Int64.Parse(dt.Rows[0]["Cantidad"]?.ToString() ?? throw new NullReferenceException("Tabla sin datos"));
 	}
 

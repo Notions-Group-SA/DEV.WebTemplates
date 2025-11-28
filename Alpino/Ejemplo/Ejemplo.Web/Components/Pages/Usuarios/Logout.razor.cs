@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 
-namespace GDA.Core.Ciudadano.Components.Pages.Usuario;
+namespace Ejemplo.Web.Components.Pages.Usuario;
 
 public partial class Logout
 {

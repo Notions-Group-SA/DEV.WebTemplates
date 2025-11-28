@@ -1,4 +1,4 @@
-namespace GDA.Core.Ciudadano.Components.Pages.Usuario;
+namespace Ejemplo.Web.Components.Pages.Usuario;
 
 public partial class LoginError
 {

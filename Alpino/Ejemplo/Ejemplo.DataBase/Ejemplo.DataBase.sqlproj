@@ -58,8 +58,11 @@
     <Folder Include="Properties" />
     <Folder Include="Docs" />
     <Folder Include="SQL" />
+    <Folder Include="Utilidades" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SQL\StoredProcedures.sql" />
+    <None Include="SQL\sys_usuario_getbylogin.sql" />
+    <None Include="Utilidades\InsertarUsuariosPrueba.sql" />
   </ItemGroup>
 </Project>

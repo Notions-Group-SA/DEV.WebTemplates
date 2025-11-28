@@ -6,7 +6,7 @@ namespace Ejemplo.DataManager.Models;
 public class SysUsuariosModel
 {
 	#region Propiedades Publicas
-	public String Usuarios { get; set; }
+	public String Usuario { get; set; }
 
 	public String Clave { get; set; }
 
@@ -25,7 +25,7 @@ public class SysUsuariosModel
 	#region Constructors
 	public SysUsuariosModel(DataRow row)
 	{
-		Usuarios = DataParser.ToString(row["Usuarios"]);
+		Usuario = DataParser.ToString(row["Usuario"]);
 		Clave = DataParser.ToString(row["Clave"]);
 		Activo = DataParser.ToBool(row["Activo"]);
 		FechaAlta = DataParser.ToDateTime(row["Fecha_Alta"]);
