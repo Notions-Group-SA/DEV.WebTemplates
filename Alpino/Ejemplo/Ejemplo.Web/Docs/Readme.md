@@ -15,3 +15,4 @@ Ejemplo.Utils
 
 ## NuGet necesarios
 Swashbuckle.AspNetCore
+Microsoft.AspNetCore.Authentication.JwtBearer

@@ -1,9 +1,8 @@
-﻿@using GDA.Core.DataManager
-@using Microsoft.AspNetCore.Components.Web
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
 
 
 
-@inject LutParametrosDataManager _Parametros
-@inject SysVecinosDataManager _Vecino
-@inject LutTiposTicketsDataManager _TipoTickets
-@inject LutEstadosIndicenteDataManager _EstadosIncidente
+@* utilidades provistas por netcore *@
+@inject IJSRuntime _JS;
+@inject NavigationManager _Navigation

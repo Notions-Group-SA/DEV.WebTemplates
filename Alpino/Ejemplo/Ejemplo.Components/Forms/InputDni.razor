@@ -1,6 +1,26 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.JSInterop
-@inject IJSRuntime JS
 
 
 <InputText class="form-control dni" @bind-Value="@montoPreFormat" placeHolder="DNI" type="number"></InputText>
+
+@code
+{
+    string montoPreFormat;
+    decimal montoFinal;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _JS.InvokeVoidAsync("initDniInputs");
+        }
+    }
+
+
+    public decimal GetValue()
+    {
+        montoFinal = decimal.Parse(montoPreFormat.Replace(".", ""));
+        return montoFinal;
+
+    }
+}

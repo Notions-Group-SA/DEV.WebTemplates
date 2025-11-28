@@ -1,4 +1,4 @@
-﻿namespace GDA.Core.Components.GoogleMaps;
+﻿namespace Ejemplo.Components.GoogleMaps;
 
 public class CoordenadasGoogle
 {

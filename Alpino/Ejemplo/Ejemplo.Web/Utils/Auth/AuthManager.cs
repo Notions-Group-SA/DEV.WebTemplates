@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using System.Reflection;
+
 using System.Security.Claims;
 
 namespace Ejemplo.Web.Utils.Auth;

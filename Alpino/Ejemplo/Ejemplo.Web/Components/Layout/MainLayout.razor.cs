@@ -1,9 +1,5 @@
-using Ejemplo.Web.Components;
 
 using Ejemplo.Web.Utils.Auth;
-
-using Microsoft.AspNetCore.Components;
-using System.Net;
 
 namespace Ejemplo.Web.Components.Layout;
 

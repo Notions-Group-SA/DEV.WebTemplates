@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace GDA.Core.Components;
+namespace Ejemplo.Components.Modals;
 
 public partial class ModalConfirmacion
 {

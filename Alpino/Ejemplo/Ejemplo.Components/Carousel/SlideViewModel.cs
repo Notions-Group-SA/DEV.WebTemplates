@@ -1,6 +1,6 @@
 ﻿
 
-namespace GDA.Core.Components.Carousel;
+namespace Ejemplo.Components.Carousel;
 
 public class SlideViewModel
 {

@@ -1,19 +1,21 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
-@using Ejemplo.DataManager
-@using Ejemplo.Utils
+
 @using Microsoft.JSInterop
 @using Notions.Core.Security
+
+@using Ejemplo.DataManager
+@using Ejemplo.Utils
 
 
 @* utilidades provistas por netcore *@
 @inject IJSRuntime _JS
 @inject IJSRuntime JSRuntime
+@inject IHttpContextAccessor _HttpContextAccessor
+@inject NavigationManager _Navigation
 
 @* utilidades notions *@
 @inject NgCrypto _NgCrypto;
-@inject IHttpContextAccessor _HttpContextAccessor
-@inject NavigationManager _Navigation
 @inject NgRandom _Random
 
 @* data managers *@

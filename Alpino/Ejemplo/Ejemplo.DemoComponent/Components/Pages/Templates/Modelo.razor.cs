@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Ejemplo.Components.Pages.Templates;
+namespace Ejemplo.DemoComponent.Components.Pages.Templates;
 
 public partial class Modelo
 {

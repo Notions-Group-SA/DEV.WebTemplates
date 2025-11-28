@@ -1,4 +1,5 @@
 ﻿@using Microsoft.JSInterop
+
 @implements IAsyncDisposable
 
 <div class="@CssClass" style="display: @(isInitialized ? "block" : "none")">
@@ -85,7 +86,6 @@
     #endregion
 
     #region JS
-    [Inject] IJSRuntime _JS { get; set; } = default!;
     IJSObjectReference? jsObjectReference;
     DotNetObjectReference<Quill>? dotNetObjectReference;
 

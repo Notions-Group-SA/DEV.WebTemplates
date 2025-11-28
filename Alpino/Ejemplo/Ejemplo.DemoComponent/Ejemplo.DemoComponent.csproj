@@ -37,6 +37,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ejemplo.Components\Ejemplo.Components.csproj" />
+    <ProjectReference Include="..\Ejemplo.DataManager\Ejemplo.DataManager.csproj" />
+    <ProjectReference Include="..\Ejemplo.Utils\Ejemplo.Utils.csproj" />
   </ItemGroup>
 
 </Project>

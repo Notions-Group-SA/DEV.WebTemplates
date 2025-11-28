@@ -1,6 +1,36 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.JSInterop
-@inject IJSRuntime JS
-
 
 <InputText class="form-control cuit" @bind-Value="@montoPreFormat" placeHolder="CUIT / CUIL"></InputText>
+
+@code
+{
+    string montoPreFormat;
+    decimal montoFinal;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await _JS.InvokeVoidAsync("initCuitInputs");
+            }
+            catch { }
+
+        }
+    }
+
+    public decimal GetValue()
+    {
+
+        montoFinal = decimal.Parse(montoPreFormat.Replace("-", ""));
+        return montoFinal;
+
+    }
+}

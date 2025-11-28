@@ -1,4 +1,4 @@
-namespace Ejemplo.Web.Components.Pages.Usuario;
+namespace Ejemplo.Web.Components.Pages.Usuarios;
 
 public partial class LoginError
 {

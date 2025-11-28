@@ -1,4 +1,4 @@
-﻿namespace GDA.Core.Components.SparkLine;
+﻿namespace Ejemplo.Components.SparkLine;
 
 public class ConfigSparkLine
 {

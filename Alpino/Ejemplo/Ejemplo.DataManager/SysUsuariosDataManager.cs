@@ -42,23 +42,10 @@ public class SysUsuariosDataManager() : SysUsuariosAbstract()
     //GetBy: El metodo que usamos siempre pero mucho mas simple a como lo venimos usando
 
 
-    public async Task<DataSet> GetByLoginAsync(string nombre, string clave)
-    {
-        object?[] arParams =
-        [
-            nombre,
-            clave
-        ];
-
-        return await _dbManager.GetByAsync("Login", arParams);
-    }
-
-    //GetListBy: *Nuevo Metodo* Devuelve lo mismo que el metodo GetBy, pero parseado a una lista de SysUsuariosModel
-
-    public async Task<List<SysUsuariosModel>> GetListByLoginAsync(string nombre, string clave)
-    {
-        return (await this.GetByLoginAsync(nombre, clave)).Tables[0].Rows.Cast<DataRow>().Select(row => new SysUsuariosModel(row)).ToList();
-        //return [.. Rows.Cast<DataRow>().Select(row => new SysUsuariosModel(row))];
-    }
+    public async Task<bool> GetByLoginAsync(string usuario, string clave)
+	{
+		DataTable dt = (await _dbManager.GetByAsync("Login", usuario, clave)).Tables[0];
+		return dt.Rows.Count==1;
+	}
 
 }

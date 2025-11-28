@@ -3,6 +3,7 @@ using Notions.Core.Utils.DataManager;
 
 #pragma warning disable CS8618 
 namespace Ejemplo.DataManager.Models;
+
 public class SysUsuariosModel
 {
 	#region Propiedades Publicas

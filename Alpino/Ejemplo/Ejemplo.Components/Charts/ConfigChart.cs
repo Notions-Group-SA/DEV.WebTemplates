@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace GDA.Core.Components.Charts;
+namespace Ejemplo.Charts;
 
 public enum ChartType
 {

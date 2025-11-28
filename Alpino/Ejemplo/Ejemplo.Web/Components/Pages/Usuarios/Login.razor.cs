@@ -2,12 +2,6 @@ using Ejemplo.Web.Utils.Auth;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.JSInterop;
-
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Ejemplo.Web.Components.Pages.Usuarios;
 
@@ -20,37 +14,30 @@ public partial class Login
 
 
     private string MensajeError = "";
-
+    private string Titulo = "";
+    private string NombreMunicipio = "";
+    private string Leyenda = "";
 
     protected override async Task OnInitializedAsync()
     {
-    
-        var httpContext = _HttpContextAccessor.HttpContext;
-
-        //detección por token SSO
+       //detección por token SSO
     }
 
     async Task onLogin()
     {
-        if (await _Usuarios.LoginAsync(Model.Nombre, Model.Clave) == false)
+        if (await _Usuarios.GetByLoginAsync(Model.Nombre, Model.Clave) == false)
         {
             _Navigation.NavigateTo("LoginError", forceLoad: true);
         }
 
-        vecinosModel = await _Ciudadano.GetOneAsync(decimal.Parse(Model.Nombre));
-        if (vecinosModel == null)
-            return;
+        //consulta  a la base
 
         AuthManager _auth = new(_HttpContextAccessor);
         _auth.Usuario = Model.Nombre;
-        _auth.Nombre = vecinosModel.Nombre;
-        _auth.Apellido = vecinosModel.Apellido;
-        _auth.Celular = vecinosModel.PrefijoCelular + " " + vecinosModel.Celular;
-        _auth.Email = vecinosModel.Email;
-        _auth.Dni = Model.Nombre;
+        //otros datos _auth.Nombre = vecinosModel.Nombre;
         _auth.Postback = "";
         _auth.setSession();
 
-        _Navigation.NavigateTo("Index", forceLoad: true);
+        _Navigation.NavigateTo(returnUrl, forceLoad: true);
     }
 }

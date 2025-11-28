@@ -1,6 +1,4 @@
-﻿@using Microsoft.JSInterop
-
-<div id="@mapsId" style="height: @Height; width: @Width; margin-top: @MarginTop;"></div>
+﻿<div id="@mapsId" style="height: @Height; width: @Width; margin-top: @MarginTop;"></div>
 
 @code
 {
@@ -91,7 +89,6 @@
 	#endregion
 
 	#region JS
-	[Inject] IJSRuntime _JS { get; set; } = default!;
 	DotNetObjectReference<GoogleMaps>? dotNetObjectReference;
 	IJSObjectReference? jsObjectReference;
 
