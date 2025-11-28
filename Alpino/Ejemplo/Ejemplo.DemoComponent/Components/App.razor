@@ -55,6 +55,20 @@
 
     <link rel="stylesheet" href="css/commons/blazor-reconnect.css?v=@version" />
 
+    <!-- carousel juan -->
+
+    <link rel="stylesheet" href="css/components/carouselng/carouselng.css?v=@version" />
+    <link rel="stylesheet" href="css/components/carouselng/carouselng.ui.css?v=@version" />
+
+    <!-- sidebar juan -->
+
+    <link rel="stylesheet" href="css/components/sidebarng/sidebarng.css?v=@version" />
+    <link rel="stylesheet" href="css/components/sidebarng/sidebarng.ui.css?v=@version" />
+
+    <!-- quill, no template -->
+
+    <link rel="stylesheet" href="css/components/quill/quill.snow.css?v=@version" />
+
     <HeadOutlet />
 
 </head>
@@ -79,8 +93,6 @@
         <script src="assets/plugins/jquery-spinner/js/jquery.spinner.js"></script>
         <script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
         <script src="assets/plugins/nouislider/nouislider.js"></script>
-
-
 
         <!-- chartjs, -->
         <script src="assets/plugins/chartjs/Chart.bundle.js"></script>
@@ -115,13 +127,14 @@
         <script src="assets/js/pages/index.js"></script>
         <script src="assets/js/pages/forms/basic-form-elements.js"></script>
     </div>
+
     @* componentes, componentes externos *@
     <div>
         @* quill *@
-        <script src="js/components/quill/quill.min.js"></script>
+        <script src="js/components/quill/quill.min.js?v=@version"></script>
 
         @* googlempas *@
-        <script src="js/components/GoogleMaps/googlemaps.min.js?v=5"></script>
+        <script src="js/components/GoogleMaps/googlemaps.min.js?v=@version"></script>
     </div>
 
     <script>
