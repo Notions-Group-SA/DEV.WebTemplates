@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="Ejemplo.BackOffice.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <!-- template plugins -->
+
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/plugins/morrisjs/morris.css" />
+    <link rel="stylesheet" href="assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css" />
+    <link rel="stylesheet" href="assets/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.css" />
+    <link rel="stylesheet" href="assets/plugins/multi-select/css/multi-select.css">
+    <link rel="stylesheet" href="assets/plugins/jquery-spinner/css/bootstrap-spinner.css">
+    <link rel="stylesheet" href="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="assets/plugins/bootstrap-select/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="assets/plugins/nouislider/nouislider.min.css" />
+
+    <!-- chartjs, jqueryknow -->
+
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <!-- chartjs, jqueryknow -->
+
+    <link rel="stylesheet" href="assets/css/color_skins.css">
+
+    <HeadOutlet />
+</head>
+
+<body>
+    <Routes />
+
+    <!--junto con el blazor-reconnect.css inhibe el mensaje de reconexión-->
+    <div id="components-reconnect-modal">
+    </div>
+
+    <!-- chartjs, jqueryknow -->
+    <script src="assets/bundles/libscripts.bundle.js"></script>
+
+    <!-- plugins-->
+    <div>
+        <script src="assets/js/html2pdf.bundle.min.js"></script>
+        <script src="assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+        <script src="assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+        <script src="assets/plugins/multi-select/js/jquery.multi-select.js"></script>
+        <script src="assets/plugins/jquery-spinner/js/jquery.spinner.js"></script>
+        <script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+        <script src="assets/plugins/nouislider/nouislider.js"></script>
+
+
+
+        <!-- chartjs, -->
+        <script src="assets/plugins/chartjs/Chart.bundle.js"></script>
+        <script src="assets/plugins/chartjs/polar_area_chart.js"></script>
+
+        <!-- jqueryknow -->
+        <script src="assets/plugins/jquery-knob/jquery.knob.min.js"></script>
+
+        <script src="assets/plugins/momentjs/moment.js"></script>
+        <script src="assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    </div>
+
+    @*  bundle *@
+    <div>
+        @* chartjs, jqueryknow *@
+        <script src="assets/bundles/vendorscripts.bundle.js"></script>
+
+        @*  jqueryknob,  *@
+        @*   <script src="assets/bundles/knob.bundle.js"></script> *@
+
+        <script src="assets/bundles/jvectormap.bundle.js"></script>
+        <script src="assets/bundles/morrisscripts.bundle.js"></script>
+        <script src="assets/bundles/sparkline.bundle.js"></script>
+        <script src="assets/bundles/doughnut.bundle.js"></script>
+
+        @* chartjs, jqueryknob,  *@
+        <script src="assets/bundles/mainscripts.bundle.js"></script>
+    </div>
+
+    @* pages, ejemplos de uso *@
+    <div>
+        <script src="assets/js/pages/index.js"></script>
+        <script src="assets/js/pages/forms/basic-form-elements.js"></script>
+    </div>
+
+    <script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>
