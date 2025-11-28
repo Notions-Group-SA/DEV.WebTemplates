@@ -1,5 +1,4 @@
 using Ejemplo.DataManager;
-using Ejemplo.DemoComponent.Components;
 using Ejemplo.Utils;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,6 +11,8 @@ using Notions.Core.Utils.DataManager;
 
 using System.Globalization;
 using System.Text;
+
+using Ejemplo.DemoComponent.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor();
+#endregion
+
+#region autentificación externar - despues de las cookies de autenticación
 #endregion
 
 #region netcore components

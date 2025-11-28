@@ -1,15 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
 
-    <link rel="stylesheet" href="app.css" />
-    <link rel="stylesheet" href="DemoComponent.styles.css" />
-
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="Ejemplo.Web.styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/LogoGDA.png" />
 
     <!-- template plugins -->
 
@@ -52,12 +51,16 @@
 
     <link rel="stylesheet" href="css/components/quill/quill.snow.css?v=@version" />
 
+    <!-- components-commons -->
+
     <link rel="stylesheet" href="css/commons/blazor-reconnect.css?v=@version" />
 
     <HeadOutlet />
+
 </head>
 
-<body>
+<body class="theme-black">
+
     <Routes />
 
     <!--junto con el blazor-reconnect.css inhibe el mensaje de reconexión-->
@@ -69,12 +72,15 @@
 
     <!-- plugins-->
     <div>
+        <script src="assets/js/html2pdf.bundle.min.js"></script>
         <script src="assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
         <script src="assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
         <script src="assets/plugins/multi-select/js/jquery.multi-select.js"></script>
         <script src="assets/plugins/jquery-spinner/js/jquery.spinner.js"></script>
         <script src="assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
         <script src="assets/plugins/nouislider/nouislider.js"></script>
+
+
 
         <!-- chartjs, -->
         <script src="assets/plugins/chartjs/Chart.bundle.js"></script>
@@ -104,26 +110,30 @@
         <script src="assets/bundles/mainscripts.bundle.js"></script>
     </div>
 
-    @* componentes, componentes externos - similar a los bundles-  *@
-    <div>
-        @* quill *@
-        <script src="js/components/quill/quill.min.js"></script>
-
-        @* googlempas *@
-        <script src="js/components/GoogleMaps/googlemaps.min.js?v=@version"></script>
-    </div>
-
     @* pages, ejemplos de uso *@
     <div>
         <script src="assets/js/pages/index.js"></script>
         <script src="assets/js/pages/forms/basic-form-elements.js"></script>
     </div>
-
+    @* componentes, componentes externos *@
     <div>
-        <script src="js/utils/downloadfile/downloadFileFromStream.js?v=@version"></script>
+        @* quill *@
+        <script src="js/components/quill/quill.min.js"></script>
+
+        @* googlempas *@
+        <script src="js/components/GoogleMaps/googlemaps.min.js?v=5"></script>
     </div>
-    
+
+    <script>
+        window.removeEmptyClassFromBody = function () {
+            if (document.body && document.body.getAttribute("class") === "") {
+                document.body.removeAttribute("class");
+            }
+        };
+    </script>
+
     <script src="_framework/blazor.web.js"></script>
+
 </body>
 
 </html>

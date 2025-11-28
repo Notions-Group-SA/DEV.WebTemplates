@@ -1,23 +1,22 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Authorization
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inherits LayoutComponentBase
+@attribute [Authorize]
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<input type="radio" id="sidebar-toggle" name="sidebar-state" class="sidebar-toggle" />
+<input type="radio" id="sidebar-close" name="sidebar-state" class="sidebar-close" checked />
 
-        <article class="content px-4">
+<label for="sidebar-toggle" class="mobile-toggle-btn">☰</label>
+<label for="sidebar-close" class="mobile-close-btn">×</label>
+
+<div class="main-container">
+    
+
+    <section class="content home" style="margin: 0px !important">
+        <div class="container">
             @Body
-        </article>
-    </main>
+        </div>
+    </section>
+
 </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>

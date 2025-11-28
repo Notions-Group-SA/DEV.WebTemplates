@@ -20,7 +20,7 @@ public partial class Login
 
     protected override async Task OnInitializedAsync()
     {
-       //detección por token SSO
+       //otros metodos de autenticado
     }
 
     async Task onLogin()
