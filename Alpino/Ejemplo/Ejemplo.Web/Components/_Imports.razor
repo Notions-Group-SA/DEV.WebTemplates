@@ -1,0 +1,83 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.JSInterop
+@using Notions.Core.Security
+
+
+@* utilidades provistas por netcore *@
+@inject IJSRuntime _JS
+
+
+@* utilidades notions *@
+@inject NgCrypto _NgCrypto;
+@inject IHttpContextAccessor _HttpContextAccessor
+@inject NavigationManager _Navigation
+@inject NgRandom _Random
+
+@inject TurnosService _TurnoService
+@inject LutParametrosDataManager _Parametros
+@inject SysVecinosDataManager _Ciudadanos
+@inject SysTramitesFilesDataManager _TramitesFiles
+@inject LutSectoresDataManager _Sectores
+@inject LutMotivosIncidenteDataManager _MotivosIncidente
+@inject LutMotivosCierreIncidenteDataManager _MotivosCierreIncidente
+@inject LutTiposTicketsDataManager _TiposTicket
+@inject LutCanalesIndicenteDataManager _CanalesIncidentes
+@inject LutDireccionesDataManager _Direcciones
+@inject LutSecretariasDataManager _Secretarias
+@inject SysIncidentesDataManager _Incidentes
+@inject SysNotasIncidentesDataManager _IncidentesNotas
+@inject SysTareasIncidentesDataManager _IncidentesTareas
+@inject SysIncidentesFilesDataManager _IncidentesFiles
+@inject SysIncidentesMensajesDataManager _IncidenteMensajes
+@inject LutTiposIncidenteDataManager _TiposIncidente
+@inject SGM_Sys_Comercios _MigComercios
+@inject SGM_Sys_Incidentes _MigIncidentes
+@inject LutComprasTiposSociedadDataManager _TiposSociedad
+@inject LutTiposComerciosDataManager _TiposComercio
+@inject LutRubrosComerciosDataManager _RubrosComercios
+@inject LutLocalidadesDataManager _Localidades
+@inject SysTramitesDataManager _Tramites
+@inject SysLoginVecinoDigitalDataManager _LoginVecino
+@inject SysCausasDataManager _Causas
+@inject LutEstadosCausaDataManager _EstadosCausa
+@inject SysPagosDataManager _PagosCausa
+@inject LutRelacionMovilParkingDataManager _RelacionMP
+@inject LutRelacionMovilParkingDataManager _Movpark
+@inject MovparkService _MovparkService
+@inject SysComerciosDataManager _Comercios
+@inject SysComerciosDocumentosDataManager _ComerciosDocumentos
+@inject IJSRuntime JSRuntime
+@inject ComercioService _ComercioService
+@inject LutTiposDocumentosDataManager _TiposDocumentos
+@inject LutServiciosCiudadanoDataManager _ServiciosCiudadano
+@inject LutModulosCiudadanaDataManager _ModulosCiudadano
+@inject LutSexosDataManager _Sexos
+@inject NgFechaNacimiento _FechasNacimiento
+@inject LutEstadosIndicenteEjecucionDataManager _EstadosEjecucionIncidente
+@inject SysComerciosApoderadosDataManager _ApoderadosComercio
+@inject SysIncidentesEtiquetasDataManager _IncidentesEtiquetasComercio
+@inject GatewayPagosHabilitacionesDataManager _GatewayPagosHabilitaciones
+@inject SysProfesionalesDataManager _Profesionales
+@inject LutEstadosProfesionalDataManager _EstadosProfesional
+@inject LutTiposProfesionalesDataManager _TiposProfesionales
+@inject LutTiposProfesionalesDocumentacionRequeridaDataManager _TiposDocumentacionProfesional
+@inject SysProfesionalesDocumentosDataManager _DocumentosProfesionales
+@inject SysDocumentosProfesionalesEventosDataManager _EventosProfesional
+@inject LutOficinasTurnosDataManager _OficinaTurnos
+@inject SysInmueblesDataManager _Inmuebles
+@inject SysTitularesInmuebleDataManager _TitularesInmueble
+@inject LutTiposInmueblesDataManager _TiposInmuebles
+@inject SysIncidentesFilesEventosDataManager _IncidentesFilesEventos
+@inject LutTiposAutorizacionProfesionalDataManager _TipoAutorizacionProfesional
+@inject SysIncidentesProfesionalesAutorizadosDataManager _IncidenteProfesionalesAutorizados
+@inject LutMotivosIncidenteDocumentacionRequeridaDataManager _DocumentosRequeridos
+@inject SysIncidentesFilesEventosDocumentosDataManager _DocumentosEventos
+@inject SysNotificacionesFuncionariosDataManager _NotificacionesFuncionarios
+@inject LutModulosDataManager _ModulosIncidentes
+
+@* servicios *@
+@inject TicketService _TicketService
+@inject ParametrosService _ParametrosServicio
+@inject DocumentosService _DocumentosService
+@inject GMapsService _GMapsService
