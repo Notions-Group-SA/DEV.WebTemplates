@@ -46,7 +46,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ejemplo.Utils", "Ejemplo.Ut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notions.Core.Security", "NotionsUtils\Notions.Core.Security\Notions.Core.Security.csproj", "{FD88F771-6332-8727-5A54-BB67A0AF260F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddIcional", "AddIcional", "{7D777F31-FDA4-4D1E-B2AD-ECA7CCB2CE2D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additional", "Additional", "{7D777F31-FDA4-4D1E-B2AD-ECA7CCB2CE2D}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\ReadmeAdditional.md = Docs\ReadmeAdditional.md
+	EndProjectSection
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Ejemplo.DataBase", "Ejemplo.DataBase\Ejemplo.DataBase.sqlproj", "{7D87249E-7F02-443D-A46A-5738B35C8A1B}"
 EndProject
