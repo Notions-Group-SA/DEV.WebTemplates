@@ -1,5 +1,7 @@
-using System.Data;
+using Notions.Core.Security;
 using Notions.Core.Utils.DataManager;
+using System.Data;
+using System.Numerics;
 
 #pragma warning disable CS8618 
 namespace Ejemplo.DataManager.Models.Insert;
@@ -8,7 +10,16 @@ public class InsertSysUsuariosModel
 	#region Propiedades Publicas
 	public String Usuario { get; set; }
 
-	public String Clave { get; set; }
+	private string clave;
+	public String Clave
+	{
+		get { return clave; }
+		set
+		{
+			NgCrypto _crypto = new NgCrypto();
+			clave = _crypto.GetMD5(value);
+		}
+	}
 
 	public bool Activo { get; set; }
 

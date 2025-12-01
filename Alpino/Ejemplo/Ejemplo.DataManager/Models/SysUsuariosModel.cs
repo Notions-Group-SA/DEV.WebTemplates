@@ -1,5 +1,7 @@
-using System.Data;
+using Notions.Core.Security;
 using Notions.Core.Utils.DataManager;
+using System.Data;
+using System.Numerics;
 
 #pragma warning disable CS8618 
 namespace Ejemplo.DataManager.Models;
@@ -9,7 +11,17 @@ public class SysUsuariosModel
 	#region Propiedades Publicas
 	public String Usuario { get; set; }
 
-	public String Clave { get; set; }
+	private string clave;
+	public String Clave
+	{
+		get { return clave; }
+        set
+        {
+            NgCrypto _crypto = new NgCrypto();
+            clave = _crypto.GetMD5(value);
+        }
+	}
+
 
 	public bool Activo { get; set; }
 
@@ -24,7 +36,11 @@ public class SysUsuariosModel
 	#endregion
 
 	#region Constructors
-	public SysUsuariosModel(DataRow row)
+	public SysUsuariosModel()
+	{
+	}
+
+    public SysUsuariosModel(DataRow row)
 	{
 		Usuario = DataParser.ToString(row["Usuario"]);
 		Clave = DataParser.ToString(row["Clave"]);

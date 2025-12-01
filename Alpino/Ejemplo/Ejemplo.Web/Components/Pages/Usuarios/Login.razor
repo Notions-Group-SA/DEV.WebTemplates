@@ -28,10 +28,14 @@
                         </div>
                         <EditForm method="post" Model="Model" OnValidSubmit="onLogin" FormName="LoginForm" Enhance>
 
-                            <div class="input-group">
+                            @* <div class="input-group">
                                 <InputText id="User" class="form-control" @bind-Value="Model.Nombre" placeholder="Ingresa tu DNI" type="number" />
                                 <span class="input-group-addon"><i class="zmdi zmdi-account-circle"></i></span>
-                            </div>
+                            </div> *@
+                            <div class="input-group">
+                                <InputText id="User" class="form-control" @bind-Value="Model.Nombre" placeholder="Usuario" />
+                                <span class="input-group-addon"><i class="zmdi zmdi-account-circle"></i></span>
+                            </div> 
                             <div class="input-group">
                                 <InputText id="Clave" class="form-control" type="password" @bind-Value="Model.Clave" placeholder="Clave" />
                                 <span class="input-group-addon"><i class="zmdi zmdi-lock"></i></span>

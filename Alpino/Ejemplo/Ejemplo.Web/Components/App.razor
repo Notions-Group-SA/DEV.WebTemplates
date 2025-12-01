@@ -7,8 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <base href="/" />
+
+    @* <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" /> 
     <link rel="stylesheet" href="Ejemplo.Web.styles.css" />
-    <link rel="icon" type="image/png" href="assets/images/LogoGDA.png" />
+    *@
 
     <!-- template plugins -->
 
@@ -30,11 +34,7 @@
 
     <link rel="stylesheet" href="assets/css/color_skins.css">
 
-    <!-- adicional-->
-
-    <link rel="stylesheet" href="css/additionals/sidebar-override.css?v=@version" />
-    <link rel="stylesheet" href="css/additionals/body-menu.css?v=@version">
-    <link rel="stylesheet" href="css/additionals/ng-placeholder.css?v=@version">
+    <!-- externos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- carousel juan -->
@@ -42,18 +42,24 @@
     <link rel="stylesheet" href="css/components/carouselng/carouselng.css?v=@version" />
     <link rel="stylesheet" href="css/components/carouselng/carouselng.ui.css?v=@version" />
 
-    <!-- sidebar juan -->
-
-    <link rel="stylesheet" href="css/components/sidebarng/sidebarng.css?v=@version" />
-    <link rel="stylesheet" href="css/components/sidebarng/sidebarng.ui.css?v=@version" />
-
     <!-- quill, no template -->
 
     <link rel="stylesheet" href="css/components/quill/quill.snow.css?v=@version" />
 
-    <!-- components-commons -->
+    <!-- adicionales -->
 
-    <link rel="stylesheet" href="css/commons/blazor-reconnect.css?v=@version" />
+    <!--oculta el mensaje reconectar de blazor-->
+    <link rel="stylesheet" href="css/additionals/blazor/blazor-reconnect.css?v=@version" />
+
+    <!-- menu sidebar juan -->
+    <link rel="stylesheet" href="css/additionals/sidebarng/sidebarng.css?v=@version" />
+    <link rel="stylesheet" href="css/additionals/sidebarng/sidebarng.ui.css?v=@version" />
+    <link rel="stylesheet" href="css/additionals/sidebarng/sidebar-override.css?v=@version" />
+    <link rel="stylesheet" href="css/additionals/sidebarng/body-menu.css?v=@version">
+
+    <!--playholder-->
+
+    <link rel="stylesheet" href="css/additionals/ng-placeholder.css?v=@version">
 
     <HeadOutlet />
 
@@ -120,20 +126,11 @@
         <script src="js/components/quill/quill.min.js"></script>
 
         @* googlempas *@
-        <script src="js/components/GoogleMaps/googlemaps.min.js?v=5"></script>
+        <script src="js/components/GoogleMaps/googlemaps.min.js?v=@version"></script>
     </div>
 
-    <script>
-        window.removeEmptyClassFromBody = function () {
-            if (document.body && document.body.getAttribute("class") === "") {
-                document.body.removeAttribute("class");
-            }
-        };
-    </script>
-
     <script src="_framework/blazor.web.js"></script>
-    <script src="js/utils/patente.js"></script>
-
+ 
 </body>
 
 </html>

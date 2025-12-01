@@ -1,0 +1,69 @@
+﻿
+--script para recrear la base de datos EJEMPLO_DESARROLLO
+USE [EJEMPLO_DESARROLLO]
+GO
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[lut_Parametros](
+	[Codigo] [varchar](150) NOT NULL,
+	[Valor] [varchar](max) NOT NULL,
+	[Observaciones] [varchar](400) NOT NULL,
+ CONSTRAINT [PK_lut_Parametros] PRIMARY KEY CLUSTERED 
+(
+	[Codigo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[lut_Periodos](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [varchar](100) NULL,
+	[Dias] [int] NULL,
+ CONSTRAINT [PK_lut_Periodos] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[sys_Usuarios](
+	[Usuario] [nchar](50) NOT NULL,
+	[Clave] [nchar](100) NOT NULL,
+	[Activo] [bit] NOT NULL,
+	[Fecha_Alta] [datetime] NOT NULL,
+	[Usuario_Alta] [varchar](50) NOT NULL,
+	[Fecha_Modificacion] [datetime] NULL,
+	[Usuario_Modificacion] [varchar](50) NULL,
+ CONSTRAINT [PK_sys_Usuarios] PRIMARY KEY CLUSTERED 
+(
+	[Usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[sys_Usuarios] ADD  CONSTRAINT [DF_sys_Usuarios_Activo]  DEFAULT ((1)) FOR [Activo]
+GO
+
+ALTER TABLE [dbo].[sys_Usuarios] ADD  CONSTRAINT [DF_sys_Usuarios_Fecha_Alta]  DEFAULT (getdate()) FOR [Fecha_Alta]
+GO
+
+

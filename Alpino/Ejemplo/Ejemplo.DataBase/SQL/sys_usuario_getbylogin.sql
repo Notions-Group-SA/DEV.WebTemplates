@@ -1,6 +1,6 @@
 ﻿
 
-USE [Ejemplo.Desarrollo]
+USE [EJEMPLO_DESARROLLO]
 
 GO
 

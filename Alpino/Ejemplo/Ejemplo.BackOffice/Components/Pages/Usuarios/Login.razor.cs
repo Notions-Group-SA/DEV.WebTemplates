@@ -1,5 +1,5 @@
 using Ejemplo.BackOffice.Utils.Auth;
-
+using Ejemplo.DataManager.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +25,10 @@ public partial class Login
 
     async Task onLogin()
     {
-        if (await _Usuarios.GetByLoginAsync(Model.Nombre, Model.Clave) == false)
+        //lo hace asi para que el seter de clav encripte
+        SysUsuariosModel usuario = new SysUsuariosModel() { Usuario = Model.Nombre, Clave = Model.Clave };
+
+        if (await _Usuarios.GetByLoginAsync(usuario.Usuario, usuario.Clave) == false)
         {
             _Navigation.NavigateTo("LoginError", forceLoad: true);
         }

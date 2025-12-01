@@ -2,7 +2,7 @@
 
 
 
-USE [Ejemplo.Desarrollo]
+USE [EJEMPLO_DESARROLLO]
 
 --argumentos
 DECLARE @Nueva_Clave NVARCHAR(200) = 'fernando';
