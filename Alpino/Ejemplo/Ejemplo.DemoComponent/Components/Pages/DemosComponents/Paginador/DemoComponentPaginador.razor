@@ -2,6 +2,7 @@
 
 @using Ejemplo
 @using Ejemplo.Components
+@using Ejemplo.Components.Paginador
 
 @rendermode InteractiveServer
 @attribute [StreamRendering]
@@ -49,7 +50,8 @@
         </tbody>
     </table>
 
-    <Paginador TotalItems="@_personas.Count" PaginasVisibles="3" ItemsPorPagina="@itemsPorPagina" PaginaActual="@paginaActual" OnCambioDePagina="OnCambioDePagina" />
+    <Paginador TotalItems="@_personas.Count" PaginasVisibles="3" ItemsPorPagina="@itemsPorPagina" 
+                PaginaActual="@paginaActual" OnCambioDePagina="OnCambioDePagina" />
 </div>
 
 @code {

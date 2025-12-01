@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Ejemplo.Utils\Ejemplo.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css\components\" />
+  </ItemGroup>
+
 </Project>
