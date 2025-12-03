@@ -5,7 +5,7 @@ VisualStudioVersion = 18.0.11222.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ejemplo.DemoComponent", "Ejemplo.DemoComponent\Ejemplo.DemoComponent.csproj", "{2A34454F-E8B1-49C3-BE13-A959DA46E74A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Alpino_template", "Alpino_template", "{F4FFF392-4210-4074-80B0-EB7CC98C989D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AlpinoTemplate", "AlpinoTemplate", "{F4FFF392-4210-4074-80B0-EB7CC98C989D}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "HTML", "..\HTML\", "{64FE48F1-CB14-CCF8-4270-42A9697542BB}"
 	ProjectSection(WebsiteProperties) = preProject
@@ -66,6 +66,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlpinoTemplate", "AlpinoTemplate\AlpinoTemplate.csproj", "{22583EB1-C044-48D2-9F25-57136F004D0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notions.Core.Component", "NotionsUtils\Notions.Core.Component\Notions.Core.Component.csproj", "{E1A49885-8B4D-8509-7FCE-A30FA9F1FE25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlpinoTemplateCustom", "AlpinoTemplateCustom\AlpinoTemplateCustom.csproj", "{29B61879-3D7F-458B-A2CE-87C6C8A0EB53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,10 @@ Global
 		{E1A49885-8B4D-8509-7FCE-A30FA9F1FE25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1A49885-8B4D-8509-7FCE-A30FA9F1FE25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1A49885-8B4D-8509-7FCE-A30FA9F1FE25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29B61879-3D7F-458B-A2CE-87C6C8A0EB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29B61879-3D7F-458B-A2CE-87C6C8A0EB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29B61879-3D7F-458B-A2CE-87C6C8A0EB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29B61879-3D7F-458B-A2CE-87C6C8A0EB53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +157,7 @@ Global
 		{7B94CD0A-81E5-4F3C-A437-F78B949ADBA0} = {AC6A0362-0589-4AF6-8342-7295924A4D8B}
 		{22583EB1-C044-48D2-9F25-57136F004D0E} = {F4FFF392-4210-4074-80B0-EB7CC98C989D}
 		{E1A49885-8B4D-8509-7FCE-A30FA9F1FE25} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{29B61879-3D7F-458B-A2CE-87C6C8A0EB53} = {F4FFF392-4210-4074-80B0-EB7CC98C989D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5E9D85FB-180C-4E63-A650-4D6230DBF12B}

@@ -1,4 +1,4 @@
-﻿namespace AlpinioTemplate;
+﻿namespace AlpinoTemplate;
 
 public class AppVersion
 {
