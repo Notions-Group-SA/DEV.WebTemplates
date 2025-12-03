@@ -1,0 +1,182 @@
+﻿<div id="@mapsId" style="height: @Height; width: @Width; margin-top: @MarginTop;"></div>
+
+@code
+{
+	string mapsId = $"maps-{Guid.NewGuid().ToString("N")}";
+
+	#region parametros
+	bool isParametersChanged = false;
+	[Parameter] public string Height { get; set; } = "400px";
+	[Parameter] public string Width { get; set; } = "100%";
+	[Parameter] public string MarginTop { get; set; } = "20px";
+
+	string token = "";
+	[Parameter]
+	public string Token
+	{
+		get
+		{
+			return token;
+		}
+		set
+		{
+			if (token != value)
+			{
+				isParametersChanged = true;
+				token = value;
+			}
+		}
+	}
+	[Parameter] public int Zoom { get; set; } = 13;
+
+
+	bool OnDireccionChanged = false;
+	string? direccion;
+	[Parameter]
+	public string? Direccion
+	{
+		get
+		{
+			return direccion;
+		}
+		set
+		{
+			if (!EqualityComparer<string?>.Default.Equals(direccion, value))
+			{
+				direccion = value;
+				OnDireccionChanged = true;
+				if (isInitialized)
+				{
+					_ = SetDireccionMaps(value);
+				}
+			}
+		}
+	}
+
+	CoordenadasGoogle? coordenadas = null;
+	[Parameter]
+	public CoordenadasGoogle? Coordenadas
+	{
+		get
+		{
+			return coordenadas;
+		}
+		set
+		{
+			if (!EqualityComparer<CoordenadasGoogle?>.Default.Equals(coordenadas, value))
+			{
+				coordenadas = value;
+				_ = NotificarCambioCoordenadasAsync();
+			}
+		}
+	}
+	[Parameter] public EventCallback<CoordenadasGoogle?> CoordenadasChanged { get; set; }
+
+	private async Task NotificarCambioCoordenadasAsync()
+	{
+		try
+		{
+			if (CoordenadasChanged.HasDelegate)
+			{
+				await CoordenadasChanged.InvokeAsync(coordenadas);
+			}
+		}
+		catch (Exception ex)
+		{
+		}
+	}
+
+	#endregion
+
+	#region JS
+	DotNetObjectReference<GoogleMaps>? dotNetObjectReference;
+	IJSObjectReference? jsObjectReference;
+
+	bool isInitialized = false;
+
+	async protected Task InitializeJS()
+	{
+		try
+		{
+
+			dotNetObjectReference ??= DotNetObjectReference.Create(this);
+			jsObjectReference = await _JS.InvokeAsync<IJSObjectReference>("import", "./js/components/GoogleMaps/main.js?v=92");
+			if (jsObjectReference != null)
+			{
+				isInitialized = await jsObjectReference.InvokeAsync<bool>("InitializeMapsBlazor",
+					dotNetObjectReference,
+					mapsId,
+					Token,
+					Zoom,
+					coordenadas ?? new CoordenadasGoogle { lat = 0, lng = 0 });
+
+				if (OnDireccionChanged == true || (coordenadas?.HayQueResolver() ?? true == true))
+				{
+					OnDireccionChanged = false;
+					_ = SetDireccionMaps(direccion);
+				}
+			}
+		}
+		catch (Exception ex)
+		{ }
+	}
+
+	async public Task SetDireccionMaps(string? direccion)
+	{
+		try
+		{
+			if (jsObjectReference != null && direccion != null)
+			{
+				await jsObjectReference.InvokeVoidAsync("SetDireccion", mapsId, direccion);
+			}
+		}
+		catch (Exception ex)
+		{ }
+	}
+
+	[JSInvokable]
+	async public Task OnMarkerCoordenadaChanged(CoordenadasGoogle coordenada)
+	{
+		await InvokeAsync(() =>
+		{
+			Coordenadas = coordenada;
+			StateHasChanged();
+		});
+	}
+
+	#endregion
+
+	#region eventos
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+			await InitializeJS();
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		if (isParametersChanged)
+		{
+			await InitializeJS();
+			isParametersChanged = false;
+		}
+		await Task.CompletedTask;
+	}
+	#endregion
+
+	public async ValueTask DisposeAsync()
+	{
+		try
+		{
+			if (jsObjectReference != null)
+			{
+				await jsObjectReference.DisposeAsync();
+			}
+			dotNetObjectReference?.Dispose();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error disposing: {ex.Message}");
+		}
+	}
+}

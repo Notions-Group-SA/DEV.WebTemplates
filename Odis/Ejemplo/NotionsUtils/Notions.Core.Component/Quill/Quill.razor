@@ -1,0 +1,175 @@
+﻿@using Microsoft.JSInterop
+
+@implements IAsyncDisposable
+
+<div class="@CssClass" style="display: @(isInitialized ? "block" : "none")">
+    <div id="@quillId" style="height: @Height;"></div>
+</div>
+
+@code
+{
+    string quillId = $"quillnote-{Guid.NewGuid().ToString("N")}";
+
+    string contents;
+    [Parameter]
+    public string Contents
+    {
+        get
+        {
+            return contents;
+        }
+        set
+        {
+            if (contents != value)
+            {
+                contents = value;
+                SetContents(contents);
+            }
+        }
+    }
+    [Parameter] public EventCallback<string> ContentsChanged { get; set; }
+
+    bool isInitialized = false;
+
+    async protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            await InitializeJS();
+        }
+    }
+
+    #region paremtros de quilleditor
+    [Parameter] public string Height { get; set; } = "400px";
+    [Parameter] public string Placeholder { get; set; } = "Escribe aquí...";
+    [Parameter] public bool ReadOnly { get; set; } = false;
+    [Parameter] public string Theme { get; set; } = "snow";
+    [Parameter] public string Modules { get; set; } = "basic";
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+
+    private object[] GetToolbarConfig(string toolbarType)
+    {
+        return toolbarType.ToLower() switch
+        {
+            "default" => new object[] {
+            new object[] { new { header = new int[] { 0, 1, 2, 3, 4, 5, 6 } } },
+            new object[] { new { font= new object[]{} }},
+            new object[] { new { size=new object[]{ "small", false, "large", "huge" } } },
+            new object[] { "bold", "italic", "underline", "strike" },
+            new object[] { new { color= new object[] { } }},
+            new object[] { new { align= new object[]{} }},
+            new object[] { "link", "image","video" },
+            new object[] { "clean" },
+    },
+            "basic" => new object[] {
+            //new object[] { new { header = 1 }, new { header = 2 } },
+            new object[] { new { header = new int[] { 0, 1, 2, 3, 4, 5, 6 } } },
+            //new object[] { new { font= new object[]{} }},
+            new object[] { new { size=new object[]{ "small", false, "large", "huge" } } },
+            new object[] { "bold", "italic", "underline", "strike" },
+            new object[] { new { color= new object[] { } }},
+            new object[] { new { align= new object[]{} }},
+            new object[] { "link", "image" },
+            new object[] { new { list="ordered"}, new{ list="bullet" }, new{ list="check" } },
+            new object[] { new { script="sub"}, new { script="super" } },
+        //new object[] { new { indent= -1}, new { indent= +1 } },
+       // new object[] { new { direction = "rtl" } },
+    },
+            // Add other toolbar configurations as needed
+            _ => new object[] {
+            new object[] { "bold", "italic", "underline", "strike" },
+            new object[] { "blockquote", "code-block" },
+
+    },
+        };
+    }
+    #endregion
+
+    #region JS
+    IJSObjectReference? jsObjectReference;
+    DotNetObjectReference<Quill>? dotNetObjectReference;
+
+    async protected Task InitializeJS()
+    {
+        try
+        {
+            var options = new
+            {
+                theme = Theme,
+                placeholder = Placeholder,
+                readOnly = ReadOnly,
+                modules = new
+                {
+                    toolbar = GetToolbarConfig(Modules),
+                }
+            };
+
+            jsObjectReference = await _JS.InvokeAsync<IJSObjectReference>("import", "./js/components/quill/main.js?v=57");
+            dotNetObjectReference ??= DotNetObjectReference.Create(this);
+            if (jsObjectReference != null)
+                isInitialized = await jsObjectReference.InvokeAsync<bool>("InitializeQuillBlazor", dotNetObjectReference, quillId, options);
+
+            if (isInitialized)
+                await SetContents(contents);
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    async public Task<string> GetContents()
+    {
+        try
+        {
+            string content = await jsObjectReference.InvokeAsync<string>("getContents", quillId);
+            if (content == "<p><br></p>") 
+                content = "";
+            return content;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        return "";
+    }
+
+    async protected Task SetContents(string contents)
+    {
+        try
+        {
+            await jsObjectReference.InvokeVoidAsync("setContents", quillId, contents);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    async public ValueTask DisposeAsync()
+    {
+        if (jsObjectReference != null)
+        {
+            try
+            {
+                //await jsObjectReference.InvokeVoidAsync("destroyQuill", EditorId);
+                await jsObjectReference.DisposeAsync();
+            }
+            catch (JSDisconnectedException ex)
+            {
+                Console.WriteLine($"Error en destroy quill: {ex.Message}");
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnContentChanged(string contents)
+    {
+
+        await ContentsChanged.InvokeAsync(contents);
+        await InvokeAsync(StateHasChanged);
+    }
+    #endregion
+}

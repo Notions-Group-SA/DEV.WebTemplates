@@ -1,0 +1,108 @@
+﻿@page "/DemoComponentPaginador"
+
+@using Ejemplo
+@using Ejemplo.Components
+@using Ejemplo.Components.Paginador
+
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+<h3>Demo paginador</h3>
+
+<div class="card">
+    <div class="row align-items-center mb-3">
+        <div class="col-sm-12 col-md-4">
+            <label>
+                <span>Mostrar</span>
+                <select class="form-control" @onchange="CambiarItemsPorPagina">
+                    <option value="2" selected="@(itemsPorPagina == 2)">2</option>
+                    <option value="4" selected="@(itemsPorPagina == 4)">4</option>
+                    <option value="5" selected="@(itemsPorPagina == 5)">5</option>
+                    <option value="10" selected="@(itemsPorPagina == 10)">10</option>
+                </select>
+                <span> Entradas</span>
+            </label>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <div class="text-end">
+                Mostrando @((_personasPaginadas.Count == 0) ? 0 : (paginaActual - 1) * itemsPorPagina + 1)
+                a @((paginaActual - 1) * itemsPorPagina + _personasPaginadas.Count)
+                de @_personas.Count entradas
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Persona p in _personasPaginadas)
+            {
+                <tr>
+                    <td>@p.Dni</td>
+                    <td>@p.Nombre</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <Paginador TotalItems="@_personas.Count" PaginasVisibles="3" ItemsPorPagina="@itemsPorPagina" 
+                PaginaActual="@paginaActual" OnCambioDePagina="OnCambioDePagina" />
+</div>
+
+@code {
+    private int itemsPorPagina = 2;
+    private int paginaActual = 1;
+
+    private async Task OnCambioDePagina(int nuevaPagina)
+    {
+        paginaActual = nuevaPagina;
+        StateHasChanged();
+    }
+
+    private List<Persona> _personas = new List<Persona>()
+    {
+        new Persona{ Dni=23343243, Nombre="Maria" },
+        new Persona{ Dni=33343243, Nombre="Leonor" },
+        new Persona{ Dni=43343243, Nombre="Norberto" },
+        new Persona{ Dni=35343243, Nombre="Andrés" },
+        new Persona{ Dni=43343241, Nombre="Estefanía" },
+        new Persona{ Dni=20343242, Nombre="Daniela" },
+        new Persona{ Dni=29366242, Nombre="Estela" },
+        new Persona{ Dni=30359242, Nombre="Hernan" },
+        new Persona{ Dni=31343241, Nombre="Daniela" },
+        new Persona{ Dni=32362241, Nombre="Graciela" },
+        new Persona{ Dni=35353242, Nombre="Gustavo" },
+    };
+
+    private List<Persona> _personasPaginadas
+    {
+        get
+        {
+            return _personas
+                        .Skip((paginaActual - 1) * itemsPorPagina)
+                        .Take(itemsPorPagina)
+                        .ToList();
+        }
+    }
+
+    private async Task CambiarItemsPorPagina(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int nuevosItems))
+        {
+            itemsPorPagina = nuevosItems;
+            paginaActual = 1; // Resetear a la primera página
+            StateHasChanged();
+        }
+    }
+
+    public class Persona
+    {
+        public int Dni { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+    }
+}

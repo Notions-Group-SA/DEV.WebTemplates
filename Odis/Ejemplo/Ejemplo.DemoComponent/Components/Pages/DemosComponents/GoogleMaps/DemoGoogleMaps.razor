@@ -1,0 +1,121 @@
+﻿@page "/demo-google-maps"
+
+@using Ejemplo
+@using Ejemplo.Components
+@using Ejemplo.Components.GoogleMaps
+
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+<h3>Demo</h3>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <!-- Localidad -->
+                    <div class="mb-3">
+                        <label class="form-label">Localidad</label>
+                        <InputSelect class="form-select" @bind-Value="localidad.Id" @bind-Value:after="OnDireccionChanged">
+                            <option value="0">Elija una localidad</option>
+                            @foreach (var localidad in localidades)
+                            {
+                                <option value="@localidad.Id">@localidad.Descripcion</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <!-- Calle y Número -->
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Calle</label>
+                            <InputText class="form-control" @bind-Value="domicilio.Calle" @bind-Value:after="OnDireccionChanged" />
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Número</label>
+                            <InputText class="form-control" @bind-Value="domicilio.Numero" @bind-Value:after="OnDireccionChanged" />
+                        </div>
+                    </div>
+
+                    <!-- Coordenadas -->
+                    <div class="mb-3">
+                        <label class="form-label">Coordenadas</label>
+                        <div>@($"{domicilio?.Lat}, {domicilio?.Lng}")</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <GoogleMaps @ref="@maps" Token="@ApiKey" Zoom="@Zoom" 
+                        Direccion="@domicilio.Direccion" 
+                        @bind-Coordenadas="@domicilio.Coordenadas"></GoogleMaps>
+        </div>
+    </div>
+
+</div>
+
+@code 
+{
+    #region models instances
+
+    LocalidadViewModel localidad = new();
+    DomicilioViewModel domicilio = new();
+
+    List<LocalidadViewModel> localidades = new()
+    {
+        new LocalidadViewModel{ Id=1, Descripcion="Paraná, Entre Ríos, Argentina"},
+        new LocalidadViewModel{ Id=2, Descripcion="Santa Fé, Santa Fé, Argentina"},
+        new LocalidadViewModel{ Id=3, Descripcion="Rosario, Santa Fé, Argentina"}
+    };
+    #endregion
+
+    GoogleMaps maps = default!;
+    string ApiKey;
+    int Zoom=13;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            var ParametroModel = await _Parametros.GetOneAsync("gMapsKey");
+            string apikey = ParametroModel?.Valor ?? "-";
+
+            ApiKey = apikey;
+            Zoom = 13;
+        }
+    }
+
+    async Task OnDireccionChanged()
+    {      
+        domicilio.DescripcionLocalidad = (from l in localidades where l.Id == localidad.Id select l.Descripcion)?.FirstOrDefault();        
+        await Task.CompletedTask;
+    }
+
+    class LocalidadViewModel
+    {
+        public int? Id { get; set; }
+        public string? Descripcion { get; set; }
+    }
+
+    // async private Task IniciarParametrosMaps()
+    // {
+    //     var configure = await _GMapsService.GetOptionMap();
+
+    //     if (configure != null && configure.Count > 0)
+    //     {
+    //         ApiKey = configure[0].key;
+    //         Zoom = configure[0].zoom;
+    //         lat = Convert.ToDouble(configure[0].centerLat);
+    //         lng = Convert.ToDouble(configure[0].centerLong);
+    //         DomicilioViewModel.Coordenadas = new CoordenadasGoogle
+    //         {
+    //             lat = lat,
+    //             lng = lng
+    //         };
+    //     }
+    // }
+}

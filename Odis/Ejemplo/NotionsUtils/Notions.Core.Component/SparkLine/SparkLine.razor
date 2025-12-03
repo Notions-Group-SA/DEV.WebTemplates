@@ -1,0 +1,111 @@
+﻿@using Microsoft.JSInterop
+@implements IAsyncDisposable
+
+<div id="@sparkLineId" style='display: @(isInitialized ? "block" : "none")'></div>
+
+@code
+{
+    string sparkLineId = $"sparkline-{Guid.NewGuid().ToString("N")}";
+
+    [Parameter] public string Type { get; set; } = "bar";
+    [Parameter] public string Width { get; set; } = "97%";
+    [Parameter] public string Heigth { get; set; } = "40px";
+    [Parameter] public int BarWidth { get; set; } = 3;
+    [Parameter] public int BarSpacing { get; set; } = 5;
+    [Parameter] public string BarColor { get; set; } = "#00ced1";
+
+    int[] valores;
+    [Parameter]
+    public int[] Valores
+    {
+        get
+        {
+            return valores;
+        }
+        set
+        {
+            if (valores != value)
+            {
+                valores = value;
+                setValores(valores);
+            }
+        }
+    }
+
+    async Task setValores(int[] valores)
+    {
+        try
+        {
+
+            await jsObjectReference.InvokeAsync<bool>("initializeSparkLine", sparkLineId, Valores, getConf());
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int[]> ValoresChanged { get; set; }
+
+    async protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == true)
+        {
+            await InitializeJS();
+        }
+    }
+
+    bool isInitialized;
+
+    #region JS
+    [Inject] IJSRuntime _JS1 { get; set; } = default!;
+    IJSObjectReference? jsObjectReference;
+    DotNetObjectReference<SparkLine>? dotNetObjectReference;
+
+    async protected Task InitializeJS()
+    {
+        try
+        {
+            jsObjectReference = await _JS1.InvokeAsync<IJSObjectReference>("import", "./js/components/sparkline/main.js?v=65");
+            dotNetObjectReference ??= DotNetObjectReference.Create(this);
+            if (jsObjectReference != null)
+                isInitialized = await jsObjectReference.InvokeAsync<bool>("initializeSparkLine", sparkLineId, Valores, getConf());
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+    #endregion
+
+    async public ValueTask DisposeAsync()
+    {
+        if (jsObjectReference != null)
+        {
+            try
+            {
+                await jsObjectReference.DisposeAsync();
+            }
+            catch (JSDisconnectedException ex)
+            {
+                Console.WriteLine($"Error en destroy sparline: {ex.Message}");
+            }
+        }
+    }
+
+
+    ConfigSparkLine getConf()
+    {
+        return new ConfigSparkLine()
+        {
+            type = Type,
+            barColor = BarColor,
+            height = Heigth,
+            barWidth = BarWidth,
+            barSpacing = BarSpacing
+        }; 
+    }
+
+}

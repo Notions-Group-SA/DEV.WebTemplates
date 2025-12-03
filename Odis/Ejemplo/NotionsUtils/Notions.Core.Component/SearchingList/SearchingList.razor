@@ -1,0 +1,127 @@
+﻿@using System.Data
+@using System.Globalization
+@using System.Reflection
+
+@using Microsoft.AspNetCore.Components.Forms
+
+@typeparam T
+
+<div class="input-group m-b-0">
+
+    <InputText type="text" class="form-control" @bind-Value="searchText"
+               @oninput="OnSearchInput"
+               placeholder="@PlaceholderText" />
+
+    <span class="input-group-addon"><i class="zmdi zmdi-search"></i></span>
+</div>
+
+@code {
+    private string searchText = "";
+
+    [Parameter] public string PlaceholderText { get; set; } = "Search...";
+    [Parameter] public string DisplayProperty { get; set; } = "Nombre";
+    [Parameter] public string SecondaryProperty { get; set; } = "Dni";
+    [Parameter] public IEnumerable<T> DataSource { get; set; }
+    [Parameter] public DataTable DataTable { get; set; }
+    [Parameter] public EventCallback<IEnumerable<T>> OnFilteredResultsChanged { get; set; }
+
+    public IEnumerable<T> FilteredResults { get; private set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeFilteredResults();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InitializeFilteredResults();
+    }
+
+    private async Task InitializeFilteredResults()
+    {
+        if (typeof(T) == typeof(DataRow) && DataTable != null)
+        {
+            FilteredResults = DataTable.AsEnumerable().Cast<T>();
+        }
+        else if (DataSource != null)
+        {
+            FilteredResults = DataSource;
+        }
+        else
+        {
+            FilteredResults = Enumerable.Empty<T>();
+        }
+
+        await NotifyFilteredResultsChanged();
+    }
+
+    private async Task OnSearchInput(ChangeEventArgs e)
+    {
+        string expresion = e.Value?.ToString() ?? "";
+
+        CompareInfo compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+        CompareOptions options = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreSymbols;
+
+        if (typeof(T) == typeof(DataRow) && DataTable != null)
+        {
+            var filteredRows = DataTable.AsEnumerable()
+                .Where(row =>
+                {
+                    var displayValue = GetDisplayValue(row)?.ToString() ?? "";
+                    return compareInfo.IndexOf(displayValue, expresion, options) >= 0;
+                })
+                .OrderByDescending(row => GetSecondaryValue(row))
+                .ThenBy(row => GetDisplayValue(row));
+
+            FilteredResults = filteredRows.Cast<T>();
+        }
+        else if (DataSource != null)
+        {
+            FilteredResults = DataSource
+                .Where(item =>
+                {
+                    var displayValue = GetDisplayValue(item)?.ToString() ?? "";
+                    return compareInfo.IndexOf(displayValue, expresion, options) >= 0;
+                })
+                .OrderByDescending(item => GetSecondaryValue(item))
+                .ThenBy(item => GetDisplayValue(item));
+        }
+
+        await NotifyFilteredResultsChanged();
+        StateHasChanged();
+    }
+
+    private async Task NotifyFilteredResultsChanged()
+    {
+        if (OnFilteredResultsChanged.HasDelegate)
+        {
+            await OnFilteredResultsChanged.InvokeAsync(FilteredResults);
+        }
+    }
+
+    private object GetDisplayValue(object item)
+    {
+        if (item is DataRow row)
+        {
+            return row.Table.Columns.Contains(DisplayProperty) ? row[DisplayProperty] : "";
+        }
+        else
+        {
+            var property = item?.GetType().GetProperty(DisplayProperty);
+            return property?.GetValue(item) ?? "";
+        }
+    }
+
+    private object GetSecondaryValue(object item)
+    {
+        if (item is DataRow row)
+        {
+            return row.Table.Columns.Contains(SecondaryProperty) ? row[SecondaryProperty] : "";
+        }
+        else
+        {
+            var property = item?.GetType().GetProperty(SecondaryProperty);
+            return property?.GetValue(item) ?? "";
+        }
+    }
+}

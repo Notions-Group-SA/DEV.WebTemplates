@@ -1,0 +1,158 @@
+﻿@typeparam TItem
+@using System.Linq.Expressions
+
+<div class="card">
+    <div class="group-form">
+        <label>@Label</label>
+        <div class="select2-container" style="position: relative; width: @Width;">
+
+            <!-- Busqueda-->
+            <div class="select2-selection" @onclick="ToggleDropdown"
+                 style="border: 1px solid #ccc; padding: 8px 12px; background: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                <span>@GetDisplayText()</span>
+                <span style="font-size: 12px;">@(isOpen ? "▲" : "▼")</span>
+            </div>
+
+            <!-- Dropdown -->
+            @if (isOpen)
+            {
+                <div class="select2-dropdown" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                    <!-- Campo de búsqueda -->
+                    <div style="padding: 8px; border-bottom: 1px solid #eee;">
+                        <input @bind="searchText" @bind:event="oninput" @onkeyup="OnSearchText"
+                               placeholder="@SearchPlaceholder"
+                               style="width: 100%; padding: 4px; border: 1px solid #ddd; outline: none;"
+                               @onclick:stopPropagation />
+                    </div>
+
+                    <!-- Opciones -->
+                    <div class="select2-results">
+                        @if (!filteredItems.Any())
+                        {
+                            <div style="padding: 8px; color: #999; font-style: italic;">
+                                No se encontraron resultados
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var item in filteredItems)
+                            {
+                                <div @onclick="() => SelectItem(item)"
+                                     @onmouseover="() => hoveredItem = item"
+                                     style="padding: 8px 12px; cursor: pointer; @(ReferenceEquals(hoveredItem, item) ? "background-color: #f0f0f0;" : "") @(ReferenceEquals(SelectedItem, item) ? "background-color: #007bff; color: white;" : "")"
+                                     class="select2-result">
+                                    @GetItemText(item)
+                                </div>
+                            }
+                        }
+
+                        <!-- Opción para crear nuevo item si está habilitado -->
+                        @if (AllowCreate && !string.IsNullOrWhiteSpace(searchText) && !filteredItems.Any(item => GetItemText(item).Equals(searchText, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            <div @onclick="() => CreateNewItem()"
+                                 style="padding: 8px 12px; cursor: pointer; background-color: #f8f9fa; font-style: italic; border-top: 1px solid #eee;">
+                                + Crear "@searchText"
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Click fuera para cerrar dropdown -->
+@if (isOpen)
+{
+    <div @onclick="CloseDropdown" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999;"></div>
+}
+
+@code {
+    #region parametros
+    [Parameter] public List<TItem> Items { get; set; } = new();
+    [Parameter] public TItem? SelectedItem { get; set; }
+    [Parameter] public EventCallback<TItem?> SelectedItemChanged { get; set; }
+    [Parameter] public Func<TItem, string> TextSelector { get; set; } = item => item?.ToString() ?? "";
+    [Parameter] public Func<TItem, object> ValueSelector { get; set; } = item => item ?? new object();
+    [Parameter] public string Label { get; set; } = "Seleccionar";
+    [Parameter] public string Width { get; set; } = "250px";
+    [Parameter] public string SearchPlaceholder { get; set; } = "Buscar...";
+    [Parameter] public string EmptyText { get; set; } = "Seleccionar una opción";
+    [Parameter] public bool AllowCreate { get; set; } = false;
+    [Parameter] public Func<string, TItem>? CreateItemFunc { get; set; }
+    #endregion
+
+    private string searchText = "";
+    private bool isOpen = false;
+    private TItem? hoveredItem;
+    private List<TItem> filteredItems = new();
+
+    protected override void OnInitialized()
+    {
+        filteredItems = Items.ToList();
+    }
+
+    protected override void OnParametersSet()
+    {
+        filteredItems = Items.ToList();
+    }
+
+    void ToggleDropdown()
+    {
+        isOpen = !isOpen;
+        if (isOpen)
+        {
+            searchText = "";
+            filteredItems = Items.ToList();
+        }
+    }
+
+    void CloseDropdown()
+    {
+        isOpen = false;
+        hoveredItem = default;
+    }
+
+    async Task OnSearchText()
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredItems = Items.ToList();
+        }
+        else
+        {
+            filteredItems = Items
+                .Where(item => GetItemText(item).Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        StateHasChanged();
+    }
+
+    async Task SelectItem(TItem item)
+    {
+        SelectedItem = item;
+        await SelectedItemChanged.InvokeAsync(item);
+        CloseDropdown();
+        StateHasChanged();
+    }
+
+    async Task CreateNewItem()
+    {
+        if (AllowCreate && CreateItemFunc != null && !string.IsNullOrWhiteSpace(searchText))
+        {
+            var newItem = CreateItemFunc(searchText.Trim());
+            Items.Add(newItem);
+            await SelectItem(newItem);
+        }
+    }
+
+    string GetDisplayText()
+    {
+        return SelectedItem != null ? GetItemText(SelectedItem) : EmptyText;
+    }
+
+    string GetItemText(TItem item)
+    {
+        return TextSelector(item);
+    }
+}

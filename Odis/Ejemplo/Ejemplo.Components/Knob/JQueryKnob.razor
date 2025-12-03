@@ -1,0 +1,96 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+
+@* 
+<div style="display: @(isInitialized ? "block" : "none")"> *@
+
+<InputText id="@idInputNumber" @bind-Value="_value"
+           data-width="@Width" data-height="@Height"
+           data-thickness="@Thickness" data-fgColor="@FgColor"
+           @attributes="AdditionalAttributes" />
+@* </div> *@
+
+@code {
+
+
+    private bool isInitialized = false;
+    private string idInputNumber = $"knob-{Guid.NewGuid():N}";
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    private IJSObjectReference? jsModule;
+
+    string _value = "45";
+    [Parameter]
+    public int Value
+    {
+        get
+        {
+            return Convert.ToInt16(_value);
+        }
+        set
+        {
+            int _valueInt = Convert.ToInt16(_value);
+            if (value != _valueInt)
+            {
+                _value = value.ToString();
+                if (isInitialized)
+                {
+                    jsModule?.InvokeVoidAsync("updateKnobValue", idInputNumber, _value);
+                }
+            }
+        }
+    }
+    [Parameter] public EventCallback<string> ValorChanged { get; set; }
+
+    [Parameter] public int Width { get; set; } = 125;
+    [Parameter] public int Height { get; set; } = 125;
+    [Parameter] public string FgColor { get; set; } = "#ff598f";
+    [Parameter] public string Thickness { get; set; } = "0.25";
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    #region Lifecycle Methods
+
+    protected async Task InitializeJsModule()
+    {
+        try
+        {
+            jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/components/JQueryKnob/main.js?v=0.55");
+            isInitialized = await jsModule.InvokeAsync<bool>("initializeKnob", idInputNumber);
+
+            // if(isInitialized)
+            // {
+            //     await jsModule.InvokeVoidAsync("setValue", idInputNumber, Value);
+            // }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en InitializeQuill: {ex.Message}");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitializeJsModule();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (jsModule != null)
+        {
+            try
+            {
+                await jsModule.InvokeVoidAsync("destroyKnob");
+                await jsModule.DisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+            }
+        }
+    }
+
+    #endregion
+}

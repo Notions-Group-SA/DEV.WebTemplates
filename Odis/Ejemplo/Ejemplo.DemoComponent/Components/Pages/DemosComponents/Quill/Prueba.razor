@@ -1,0 +1,234 @@
+﻿@page "/demo-realtime-input"
+@rendermode InteractiveServer
+
+<h3>Input con Binding en Tiempo Real</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>OPCIÓN 1: @@oninput (Recomendado)</h5>
+                </div>
+                <div class="card-body">
+                    <input type="text"
+                           class="form-control"
+                           value="@texto1"
+                           @oninput="OnInput1"
+                           placeholder="Escribe aquí..." />
+                    <small class="text-muted">Se actualiza con cada tecla</small>
+                </div>
+                <div class="card-footer">
+                    <strong>Valor:</strong> @texto1
+                    <br><strong>Longitud:</strong> @texto1?.Length
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>OPCIÓN 2: @@bind:event="oninput"</h5>
+                </div>
+                <div class="card-body">
+                    <InputText class="form-control"
+                               @bind-Value="texto2"
+                               @bind-Value:event="oninput"
+                               placeholder="Escribe aquí..." />
+                    <small class="text-muted">InputText con evento oninput</small>
+                </div>
+                <div class="card-footer">
+                    <strong>Valor:</strong> @texto2
+                    <br><strong>Longitud:</strong> @texto2?.Length
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>OPCIÓN 3: Con debounce (500ms)</h5>
+                </div>
+                <div class="card-body">
+                    <input type="text"
+                           class="form-control"
+                           value="@texto3"
+                           @oninput="OnInputDebounced"
+                           placeholder="Escribe aquí..." />
+                    <small class="text-muted">Se actualiza después de parar de escribir</small>
+                </div>
+                <div class="card-footer">
+                    <strong>Valor:</strong> @texto3
+                    <br><strong>Longitud:</strong> @texto3?.Length
+                    <br><strong>Actualizaciones:</strong> @updateCount3
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>OPCIÓN 4: Múltiples eventos</h5>
+                </div>
+                <div class="card-body">
+                    <input type="text"
+                           class="form-control"
+                           value="@texto4"
+                           @oninput="OnInput4"
+                           @onchange="OnChange4"
+                           @onblur="OnBlur4"
+                           @onfocus="OnFocus4"
+                           placeholder="Escribe aquí..." />
+                    <small class="text-muted">Múltiples eventos</small>
+                </div>
+                <div class="card-footer">
+                    <strong>Valor:</strong> @texto4
+                    <br><strong>Estado:</strong> @estadoInput4
+                    <br><strong>Último evento:</strong> @ultimoEvento4
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>OPCIÓN 5: Con validación en tiempo real</h5>
+                </div>
+                <div class="card-body">
+                    <input type="text"
+                           class="form-control @GetValidationClass()"
+                           value="@email"
+                           @oninput="OnEmailInput"
+                           placeholder="Ingresa tu email..." />
+                    <div class="mt-2">
+                        @if (!string.IsNullOrEmpty(emailError))
+                        {
+                            <small class="text-danger">@emailError</small>
+                        }
+                        else if (!string.IsNullOrEmpty(email))
+                        {
+                            <small class="text-success">✓ Email válido</small>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Opción 1: @oninput
+    string texto1 = "";
+
+    private void OnInput1(ChangeEventArgs e)
+    {
+        texto1 = e.Value?.ToString() ?? "";
+    }
+
+    // Opción 2: @bind con evento oninput
+    string texto2 = "";
+
+    // Opción 3: Con debounce
+    string texto3 = "";
+    string tempTexto3 = "";
+    int updateCount3 = 0;
+    Timer? debounceTimer;
+
+    private void OnInputDebounced(ChangeEventArgs e)
+    {
+        tempTexto3 = e.Value?.ToString() ?? "";
+
+        // Cancelar el timer anterior si existe
+        debounceTimer?.Dispose();
+
+        // Crear nuevo timer
+        debounceTimer = new Timer((_) =>
+        {
+            InvokeAsync(() =>
+            {
+                texto3 = tempTexto3;
+                updateCount3++;
+                StateHasChanged();
+            });
+        }, null, 500, Timeout.Infinite);
+    }
+
+    // Opción 4: Múltiples eventos
+    string texto4 = "";
+    string estadoInput4 = "Sin foco";
+    string ultimoEvento4 = "";
+
+    private void OnInput4(ChangeEventArgs e)
+    {
+        texto4 = e.Value?.ToString() ?? "";
+        ultimoEvento4 = "oninput";
+    }
+
+    private void OnChange4(ChangeEventArgs e)
+    {
+        ultimoEvento4 = "onchange";
+    }
+
+    private void OnBlur4(FocusEventArgs e)
+    {
+        estadoInput4 = "Sin foco";
+        ultimoEvento4 = "onblur";
+    }
+
+    private void OnFocus4(FocusEventArgs e)
+    {
+        estadoInput4 = "Con foco";
+        ultimoEvento4 = "onfocus";
+    }
+
+    // Opción 5: Con validación
+    string email = "";
+    string emailError = "";
+
+    private void OnEmailInput(ChangeEventArgs e)
+    {
+        email = e.Value?.ToString() ?? "";
+        ValidateEmail();
+    }
+
+    private void ValidateEmail()
+    {
+        if (string.IsNullOrEmpty(email))
+        {
+            emailError = "";
+            return;
+        }
+
+        if (email.Length < 3)
+        {
+            emailError = "Email debe tener al menos 3 caracteres";
+        }
+        else if (!email.Contains("@"))
+        {
+            emailError = "Email debe contener @";
+        }
+        else if (!email.Contains("."))
+        {
+            emailError = "Email debe contener un dominio válido";
+        }
+        else
+        {
+            emailError = "";
+        }
+    }
+
+    private string GetValidationClass()
+    {
+        if (string.IsNullOrEmpty(email)) return "";
+        return string.IsNullOrEmpty(emailError) ? "is-valid" : "is-invalid";
+    }
+
+    public void Dispose()
+    {
+        debounceTimer?.Dispose();
+    }
+}

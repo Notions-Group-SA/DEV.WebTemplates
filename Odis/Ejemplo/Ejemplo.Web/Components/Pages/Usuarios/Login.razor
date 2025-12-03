@@ -1,0 +1,59 @@
+﻿@page "/Login"
+
+@layout MainLayoutGeneral
+
+@using Ejemplo.Web.Components.Layout
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="authentication" style="background-image:url('assets/images/bg-login.jpg')">
+    <div class="container">
+        <div class="col-md-12 content-center">
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <div class="company_detail">
+                        <h4 class="logo"><img src="assets/images/logotipo.png" alt=""> @Titulo</h4>
+                        <h3>@NombreMunicipio</h3>
+                        <p>@Leyenda</p>
+                        <div class="footer">
+
+                            <hr>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-12 offset-lg-1">
+                    <div class="card-plain">
+                        <div class="header">
+                            <h5>Log in</h5>
+                        </div>
+                        <EditForm method="post" Model="Model" OnValidSubmit="onLogin" FormName="LoginForm" Enhance>
+
+                            @* <div class="input-group">
+                                <InputText id="User" class="form-control" @bind-Value="Model.Nombre" placeholder="Ingresa tu DNI" type="number" />
+                                <span class="input-group-addon"><i class="zmdi zmdi-account-circle"></i></span>
+                            </div> *@
+                            <div class="input-group">
+                                <InputText id="User" class="form-control" @bind-Value="Model.Nombre" placeholder="Usuario" />
+                                <span class="input-group-addon"><i class="zmdi zmdi-account-circle"></i></span>
+                            </div> 
+                            <div class="input-group">
+                                <InputText id="Clave" class="form-control" type="password" @bind-Value="Model.Clave" placeholder="Clave" />
+                                <span class="input-group-addon"><i class="zmdi zmdi-lock"></i></span>
+                            </div>
+                            <div class="footer">
+                                <button type="submit" class="btn btn-primary btn-round btn-block">Ingresar</button>
+                                <a href="Registro" class="btn btn-primary btn-simple btn-round btn-block">REGISTRARME</a>
+                            </div>
+
+
+                        </EditForm>
+
+                        <a href="RecuperoClave" class="link">¿Olvidaste tu clave?</a>
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

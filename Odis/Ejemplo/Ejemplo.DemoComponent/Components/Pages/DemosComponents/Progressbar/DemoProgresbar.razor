@@ -1,0 +1,38 @@
+﻿@page "/demo-progres-bar"
+
+<h3>DemoProgresbar</h3>
+
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+
+            @* line chart *@
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+
+                    <div class="body">
+
+                        <div class="progress-badge" style="margin-top:20px">@EjecucionAmarilloPorcentaje% a punto de vencer</div>
+
+                        <div class="progress m-b-5">
+                            <div class="progress-bar progress-bar-warning" 
+                                    role="progressbar"
+                                    aria-valuenow="@EjecucionAmarilloPorcentaje"
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100" 
+                                    style="width: @EjecucionAmarilloPorcentaje%">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    double EjecucionAmarilloPorcentaje = 65;
+}

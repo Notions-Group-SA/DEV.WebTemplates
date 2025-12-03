@@ -1,0 +1,72 @@
+using Notions.Core.Security;
+using Notions.Core.Utils.DataManager;
+using System.Data;
+using System.Numerics;
+
+#pragma warning disable CS8618 
+namespace Ejemplo.DataManager.Models.Insert;
+public class InsertSysUsuariosModel
+{
+	#region Propiedades Publicas
+	public String Usuario { get; set; }
+
+	private string clave;
+	public String Clave
+	{
+		get { return clave; }
+		set
+		{
+			NgCrypto _crypto = new NgCrypto();
+			clave = _crypto.GetMD5(value);
+		}
+	}
+
+	public bool Activo { get; set; }
+
+	public DateTime FechaAlta { get; set; }
+
+	public String UsuarioAlta { get; set; }
+
+	public DateTime? FechaModificacion { get; set; }
+
+	public String? UsuarioModificacion { get; set; }
+
+	#endregion
+
+	#region Constructors
+	public InsertSysUsuariosModel(DataRow row)
+	{
+		Usuario = DataParser.ToString(row["Usuario"]);
+		Clave = DataParser.ToString(row["Clave"]);
+		Activo = DataParser.ToBool(row["Activo"]);
+		FechaAlta = DataParser.ToDateTime(row["Fecha_Alta"]);
+		UsuarioAlta = DataParser.ToString(row["Usuario_Alta"]);
+		FechaModificacion = DataParser.ToDateTimeNullable(row["Fecha_Modificacion"]);
+		UsuarioModificacion = DataParser.ToStringNullable(row["Usuario_Modificacion"]);
+		
+	}
+	#endregion
+	#region Metodos
+
+	public object?[] GetInsertParams()
+	{
+		return 
+		[
+			Usuario,
+			Clave,
+			Activo,
+			UsuarioAlta
+		];
+	}
+	public object?[] GetUpdateParams()
+	{
+		return 
+		[
+			this.Usuario,
+			this.Clave,
+			this.Activo,
+			this.UsuarioModificacion
+		];
+	}
+	#endregion
+}

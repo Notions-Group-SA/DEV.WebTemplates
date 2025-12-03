@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Authorization
+
+@inherits LayoutComponentBase
+@attribute [Authorize]
+
+<input type="radio" id="sidebar-toggle" name="sidebar-state" class="sidebar-toggle" />
+<input type="radio" id="sidebar-close" name="sidebar-state" class="sidebar-close" checked />
+
+<label for="sidebar-toggle" class="mobile-toggle-btn">☰</label>
+<label for="sidebar-close" class="mobile-close-btn">×</label>
+
+<div class="main-container">
+    <aside>
+        <div id="leftsidebar" class="sidebar notion-left-sidebar">
+            <div class="menu">
+                <ul class="list">
+                    <li>
+                        <div class="user-info m-b-20">
+                            <div class="image">
+                                <a href="Index"><img src="assets/images/logotipo.png" alt="User"></a>
+                            </div>
+                            <div class="detail">
+                                <h6>@UserNombre</h6>
+                                <a style="color:white; padding:5px !important; width:90px;" href="Perfil" class="btn btn-sm btn-round btn-primary">Mi perfil</a>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class=""><a href="Index"><i class="far fa-dot-circle"></i><span>Inicio</span></a></li>
+                    <li class=""><a href="MisGestiones" class="menu-toggle"><i class="fas fa-user-check"></i><span>Mis Gestiones</span></a></li>
+                    <li class=""><a href="TelefonosUtiles" class="menu-toggle"><i class="fas fa-phone"></i><span>Telefonos útiles</span></a></li>
+                    <li class=""><a href="Logout"><i class="fas fa-user-alt-slash"></i><span>Cerrar Sesión</span></a></li>
+
+                </ul>
+            </div>
+        </div>
+    </aside>
+
+    <section class="content home" style="margin: 0px !important">
+        <div class="container">
+            @Body
+        </div>
+    </section>
+
+</div>
+

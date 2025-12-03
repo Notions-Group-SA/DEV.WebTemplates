@@ -1,0 +1,283 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+<div class="col">
+    @try
+    {
+        <div class="mb-4">
+            <div class="upload-card border border-2 border-dashed rounded p-5 text-center bg-light">
+                <div class="mb-3">
+                    <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="text-secondary mb-2">@* Arrastra archivos aquí o *@ Haz clic para seleccionar</h5>
+                <p class="text-muted mb-4">Máximo @FormatFileSize(MaxFileSize ?? 10 * 1024 * 1024) por archivo</p>
+
+                
+                <label class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm">
+                    <i class="fas fa-file-upload me-2"></i> Seleccionar archivos
+                    <InputFile key="@inputFileKey"
+                               OnChange="HandleFilesSelection"
+                               multiple
+                               accept="@AcceptedFileTypes"
+                               style="display:none" />
+                </label>
+            </div>
+        </div> 
+
+        @if (selectedFiles.Count > 0)
+        {
+            @foreach (var file in selectedFiles)
+            {
+                <div class="card mb-3">
+                    <div class="body">
+                        <div class="row align-items-center mb-3">
+                            <div class="col-auto">
+                                <div class="text-center text-primary">
+                                    <i class="@GetFileIcon(file.File.Name)" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h6 class="mb-1 fw-bold text-dark">@file.File.Name</h6>
+                                <small class="text-muted">@FormatFileSize(file.File.Size)</small>
+                            </div>
+                            <div class="col-auto">
+                                <button @onclick="() => RemoveFile(file.Name)"
+                                        class="btn btn-simple btn-danger  btn-icon  btn-icon-mini btn-round"
+                                        title="Eliminar Documento">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>                      
+                    </div>
+                </div>
+            }
+        }
+
+        <div class="text-danger mt-1">
+            <small>@message</small>
+        </div>
+        @if (TieneVencimiento)
+        {
+            <div class="mb-3">
+                <p>Fecha de Vencimiento: <span class="text-danger">*</span></p>
+                <InputDate class="form-control form-control-sm w-auto d-inline-block px-1 py-1"
+                           @bind-Value="FechaVencimiento"
+                           @bind-Value:after="NotificarCambio"
+                           required />
+                @if (mostrarErrorFecha)
+                {
+                    <div class="text-danger mt-1">
+                        <small>La fecha de vencimiento es requerida.</small>
+                    </div> 
+                }
+            </div>
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error {ex}");
+    }
+</div>
+
+<br />
+
+@code
+{
+    [Parameter]
+    public List<FileWrapper> selectedFiles { get; set; } = new();
+    [Parameter]
+    public int? MaxFiles { get; set; } = null;
+
+    [Parameter]
+    public string AcceptedFileTypes { get; set; } = ".pdf,.jpg,.jpeg,.png";
+    [Parameter]
+    public string GUID { get; set; }
+    [Parameter]
+    public long? MaxFileSize { get; set; } = 10 * 1024 * 1024;
+    [Parameter]
+    public string FilePath { get; set; }
+
+    [Parameter]
+    public bool TieneVencimiento { get; set; }
+
+    [Parameter] public DateTime? FechaVencimiento { get; set; } = null;
+    [Parameter] public EventCallback<DateTime?> FechaVencimientoChanged { get; set; }
+
+    private int inputFileKey = 0;
+    private string message = "";
+    private bool mostrarErrorFecha = false;
+
+    public class FileWrapper
+    {
+        public IBrowserFile File { get; set; }
+        public string FullPath { get; set; }
+        public string Name { get; set; }
+        public byte[] Content { get; set; }
+    }
+
+    public bool EsValido()
+    {
+        bool mostrarError = false;
+        if (selectedFiles.Count == 0)
+        {
+            message = "No se han seleccionado archivos.";
+            mostrarError = true;
+        }
+
+        if (TieneVencimiento && (FechaVencimiento == null || FechaVencimiento == default(DateTime)))
+        {
+            mostrarErrorFecha = true;
+            mostrarError = true;
+            StateHasChanged();
+        }
+        if (mostrarError)
+            return false;
+
+        return true;
+    }
+
+    async private Task HandleFilesSelection(InputFileChangeEventArgs e)
+    {
+        message = "";
+        mostrarErrorFecha = false; 
+
+        try
+        {
+            var extensionesPermitidas = AcceptedFileTypes
+              .Split(',', StringSplitOptions.RemoveEmptyEntries)
+              .Select(x => x.Trim().ToLower())
+              .ToList();
+
+            if (MaxFiles.HasValue && selectedFiles.Count + e.GetMultipleFiles().Count > MaxFiles.Value)
+            {
+                message = $"Solo puedes subir un máximo de {MaxFiles.Value} archivos.";
+                return;
+            }
+            foreach (var file in e.GetMultipleFiles())
+            {
+                var extension = Path.GetExtension(file.Name).ToLower();
+
+                if (!extensionesPermitidas.Contains(extension))
+                {
+                    message = $"El archivo {file.Name} no es un tipo permitido ({string.Join(", ", extensionesPermitidas)})";
+                    continue;
+                }
+                if (MaxFileSize.HasValue && file.Size > MaxFileSize.Value)
+                {
+                    message = $"El archivo {file.Name} supera el tamaño máximo permitido de {FormatFileSize(MaxFileSize.Value)}.";
+                    continue;
+                }
+                using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+
+                selectedFiles.Add(new FileWrapper
+                {
+                    File = file,
+                    Content = ms.ToArray(),
+                    Name = $"{GUID}_{file.Name}"
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            message = "Error uploading files";
+        }
+    }
+
+    private void RemoveFile(string fileName)
+    {
+        message = "";
+        mostrarErrorFecha = false; 
+        selectedFiles.RemoveAll(f => f.Name == fileName);
+        inputFileKey++;
+        StateHasChanged();
+    }
+
+    public async Task UploadFiles()
+    {
+        message = "";
+        mostrarErrorFecha = false;
+
+        if (!EsValido())
+        {
+            return;
+        }
+
+        if (selectedFiles.Count == 0)
+        {
+            message = "No se han seleccionado archivos.";
+            return;
+        }
+
+        try
+        {
+            var uploadPath = FilePath;
+
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            foreach (var fileWrapper in selectedFiles)
+            {
+                var uniqueFileName = $"{fileWrapper.Name}";
+                var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                await using var stream = new FileStream(filePath, FileMode.Create);
+                using var ms = new MemoryStream(fileWrapper.Content);
+                await ms.CopyToAsync(stream);
+            }
+
+            message = $"Se han subido {selectedFiles.Count} archivos correctamente.";
+            selectedFiles.Clear();
+            inputFileKey++;
+        }
+        catch (Exception ex)
+        {
+            message = $"Error: {ex.Message}";
+        }
+    }
+
+    private string GetFileIcon(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLower();
+        return extension switch
+        {
+            ".pdf" => "fas fa-file-pdf text-danger",
+            ".doc" or ".docx" => "fas fa-file-word text-primary",
+            ".xls" or ".xlsx" => "fas fa-file-excel text-success",
+            ".ppt" or ".pptx" => "fas fa-file-powerpoint text-warning",
+            ".jpg" or ".jpeg" or ".png" or ".gif" or ".bmp" => "fas fa-file-image text-info",
+            ".txt" => "fas fa-file-alt text-secondary",
+            ".zip" or ".rar" or ".7z" => "fas fa-file-archive text-dark",
+            _ => "fas fa-file text-muted"
+        };
+    }
+
+    private string FormatFileSize(long bytes)
+    {
+        string[] suffixes = { "B", "KB", "MB", "GB" };
+        int counter = 0;
+        decimal number = bytes;
+
+        while (Math.Round(number / 1024) >= 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+
+        return $"{number:n1} {suffixes[counter]}";
+    }
+
+    private async Task NotificarCambio()
+    {        
+        if (FechaVencimiento != null && FechaVencimiento != default(DateTime))
+        {
+            mostrarErrorFecha = false;
+            message = "";
+        }
+
+        await FechaVencimientoChanged.InvokeAsync(FechaVencimiento);
+    }
+}

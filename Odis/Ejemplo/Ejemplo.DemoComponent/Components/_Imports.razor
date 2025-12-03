@@ -1,0 +1,35 @@
+﻿@* usings defaults - necesarias para otras parte del proyecto *@
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+@* usings segun las inyecciones *@
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@using Microsoft.JSInterop
+@using Notions.Core.Security
+
+@using Ejemplo.DataManager
+@using Ejemplo.Utils
+
+
+@* utilidades provistas por netcore *@
+@inject IJSRuntime _JS
+@inject IJSRuntime JSRuntime
+@inject IHttpContextAccessor _HttpContextAccessor
+@inject NavigationManager _Navigation
+
+@* utilidades notions *@
+@inject NgCrypto _NgCrypto;
+@inject NgRandom _Random
+
+@* data managers *@
+@inject LutParametrosDataManager _Parametros
+@inject LutPeriodosDataManager _Periodos
+@inject SysUsuariosDataManager _Usuarios
+
+@* servicios *@
+@inject ParametrosService _TicketService

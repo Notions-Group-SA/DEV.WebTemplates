@@ -1,0 +1,158 @@
+﻿<div class="datagrid-pager">
+    <div class="pagination-info">
+        @if (TotalItems > 0)
+        {
+            <span>
+                Mostrando @((CurrentPage - 1) * PageSize + 1) a @Math.Min(CurrentPage * PageSize, TotalItems) de @TotalItems registros
+            </span>
+        }
+        else
+        {
+            <span>No hay registros</span>
+        }
+    </div>
+
+    @if (TotalItems > 0)
+    {
+        <ul class="pagination">
+            <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="() => OnPageClicked(1)" disabled="@(CurrentPage == 1)">
+                    «
+                </button>
+            </li>
+            <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="() => OnPageClicked(CurrentPage - 1)" disabled="@(CurrentPage == 1)">
+                    ‹
+                </button>
+            </li>
+
+            @foreach (int pageNumber in GetVisiblePages())
+            {
+                int currentPageNumber = pageNumber;
+                <li class="page-item @(pageNumber == CurrentPage ? "active" : "")">
+                    <button class="page-link" @onclick="() => OnPageClicked(currentPageNumber)">
+                        @pageNumber
+                    </button>
+                </li>
+            }
+
+            <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="() => OnPageClicked(CurrentPage + 1)" disabled="@(CurrentPage == TotalPages)">
+                    ›
+                </button>
+            </li>
+            <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="() => OnPageClicked(TotalPages)" disabled="@(CurrentPage == TotalPages)">
+                    »
+                </button>
+            </li>
+        </ul>
+    }
+</div>
+
+<style>
+    .datagrid-pager {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .pagination {
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0;
+    }
+
+    .page-item:not(:first-child) .page-link {
+        margin-left: -1px;
+    }
+
+    .page-link {
+        position: relative;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        margin-left: -1px;
+        line-height: 1.25;
+        color: #007bff;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        cursor: pointer;
+    }
+
+    .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        cursor: not-allowed;
+        background-color: #fff;
+        border-color: #dee2e6;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public int TotalItems { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPageChanged { get; set; }
+
+    private int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
+
+    private void OnPageClicked(int page)
+    {
+        if (page < 1 || page > TotalPages || page == CurrentPage)
+            return;
+
+        OnPageChanged.InvokeAsync(page);
+    }
+
+    private List<int> GetVisiblePages()
+    {
+        var pages = new List<int>();
+
+        // Always show at least 5 pages if available
+        var totalPagesToShow = Math.Min(5, TotalPages);
+
+        if (TotalPages <= totalPagesToShow)
+        {
+            for (int i = 1; i <= TotalPages; i++)
+            {
+                pages.Add(i);
+            }
+        }
+        else
+        {
+            // Try to keep current page in the middle
+            var startPage = Math.Max(1, CurrentPage - (totalPagesToShow / 2));
+            var endPage = Math.Min(TotalPages, startPage + totalPagesToShow - 1);
+
+            // Adjust if we're near the end
+            if (endPage == TotalPages)
+            {
+                startPage = Math.Max(1, endPage - totalPagesToShow + 1);
+            }
+
+            for (int i = startPage; i <= endPage; i++)
+            {
+                pages.Add(i);
+            }
+        }
+
+        return pages;
+    }
+}

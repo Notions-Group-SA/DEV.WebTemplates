@@ -1,0 +1,37 @@
+﻿@page "/DemoComponentQuill"
+
+@using Ejemplo
+@using Ejemplo.Components
+@using Ejemplo.Components.Quill
+
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+<h3>Demo Quill</h3>
+
+<div class="col-12">
+    <div class="card col-12">
+        <div class="card-header">
+            <h3>Entrada de texto inicial</h3>
+        </div>
+        <div class="card-body">
+            <InputText class="form-control" @bind-Value="contents"></InputText>
+        </div>
+    </div>
+
+    <div class="card col-12">
+        <div class="card-body">
+            <Quill @bind-Contents="contents"></Quill>
+        </div>
+    </div>
+
+    <div class="card col-12">
+        <div class="card-body">
+            @contents
+        </div>
+    </div>
+</div>
+
+@code {
+    string contents;
+}

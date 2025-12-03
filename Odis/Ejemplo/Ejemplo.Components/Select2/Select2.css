@@ -1,0 +1,16 @@
+﻿.select2-container {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.select2-selection:hover {
+    border-color: #007bff;
+}
+
+.select2-result:hover {
+    background-color: #f0f0f0 !important;
+}
+
+.select2-dropdown {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

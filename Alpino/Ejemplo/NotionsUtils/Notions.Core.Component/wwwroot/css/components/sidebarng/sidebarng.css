@@ -1,0 +1,77 @@
+/* Variables (.ng-sidebar-host):
+   --ng-width: ancho (px|vw)
+   --ng-duration: duración (s)
+   --ng-easing: curva de animación
+   --ng-left / --ng-right: anclaje (0|auto)
+   --ng-translate-sign: dirección (-1 izq | 1 der)
+   --ng-offset: desplazamiento (100% cerrado | 0% abierto)
+   --ng-backdrop-opacity: opacidad del fondo (0..1)
+   --ng-backdrop-visibility: visibilidad del fondo (hidden|visible) */
+
+.ng-sidebar-host {
+  --ng-width: 320px;
+  --ng-duration: .35s;
+  --ng-easing: cubic-bezier(.22, .61, .36, 1);
+  --ng-left: auto;
+  --ng-right: 0;
+  --ng-translate-sign: 1;
+  --ng-offset: 100%;
+  --ng-backdrop-opacity: 0;
+  --ng-backdrop-visibility: hidden;
+}
+
+.ng-open {
+  --ng-offset: 0%;
+  --ng-backdrop-opacity: .35;
+  --ng-backdrop-visibility: visible;
+}
+
+.ng-closed {
+  --ng-offset: 100%;
+  --ng-backdrop-opacity: 0;
+  --ng-backdrop-visibility: hidden;
+}
+
+.ng-sidebar-toggle {
+  position: absolute; opacity: 0; pointer-events: none;
+}
+
+.ng-on-left {
+  --ng-left: 0;
+  --ng-right: auto;
+  --ng-translate-sign: -1;
+}
+
+.ng-on-right {
+  --ng-left: auto;
+  --ng-right: 0;
+  --ng-translate-sign: 1;
+}
+
+.ng-sidebar-backdrop {
+  position: fixed; inset: 0;
+  opacity: var(--ng-backdrop-opacity, 0);
+  visibility: var(--ng-backdrop-visibility, hidden);
+  transition: opacity var(--ng-duration) var(--ng-easing), background var(--ng-duration) var(--ng-easing);
+  z-index: 998;
+}
+
+.ng-sidebar {
+  position: fixed; top: 0; bottom: 0;
+  width: var(--ng-width); max-width: 100vw;
+  left: var(--ng-left); right: var(--ng-right);
+  transform: translateX(calc(var(--ng-translate-sign) * var(--ng-offset)));
+  z-index: 999; will-change: transform;
+  transition: transform var(--ng-duration) var(--ng-easing);
+}
+
+.ng-sidebar-toggle:checked~.ng-sidebar-backdrop {
+  opacity: var(--ng-backdrop-opacity, .35);
+  visibility: visible;
+}
+
+.ng-sidebar-toggle:checked~.ng-sidebar {
+  transform: translateX(0);
+}
+
+/* Nota: estilos visuales (botón, header, sombras, etc.) estan en sidebarng.ui.css */

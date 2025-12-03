@@ -1,0 +1,55 @@
+﻿@typeparam TItem
+@using System.Linq.Expressions
+
+@code {
+    [CascadingParameter]
+    public DataGrid<TItem> DataGrid { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string PropertyName { get; set; }
+
+    [Parameter]
+    public bool Sortable { get; set; } = true;
+
+    [Parameter]
+    public bool IsDefaultSorted { get; set; }
+
+    [Parameter]
+    public bool IsDefaultSortedDescending { get; set; }
+
+    [Parameter]
+    public RenderFragment HeaderTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> CellTemplate { get; set; }
+
+    [Parameter]
+    public string HeaderClass { get; set; }
+
+    [Parameter]
+    public string CellClass { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (DataGrid == null)
+            throw new InvalidOperationException("DataGridColumn must be used inside a DataGrid");
+
+        if (string.IsNullOrEmpty(PropertyName))
+            throw new InvalidOperationException("PropertyName is required for DataGridColumn");
+
+        DataGrid.AddColumn(new DataGrid<TItem>.DataGridColumnInternal<TItem>
+            {
+                PropertyName = PropertyName,
+                Title = Title ?? PropertyName,
+                Sortable = Sortable,
+                IsDefaultSorted = IsDefaultSorted,
+                IsDefaultSortedDescending = IsDefaultSortedDescending,
+                HeaderClass = HeaderClass,
+                CellClass = CellClass,
+                CellTemplate = CellTemplate
+            });
+    }
+}

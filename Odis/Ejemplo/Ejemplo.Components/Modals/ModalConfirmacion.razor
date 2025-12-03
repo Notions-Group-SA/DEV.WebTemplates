@@ -1,0 +1,31 @@
+﻿
+@if (Visible)
+{
+    <div style="position: fixed; top:0; left:0; width: 100%; height: 100%; z-index:1050;">
+        <div class="modal-backdrop fade show" style="position:absolute; width:100%; height:100%; z-index:1040;"></div>
+
+        <div class="modal fade show" style="display: block; position: relative; z-index:1055;" tabindex="-1" role="dialog" aria-modal="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="pointer-events:auto;">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@Titulo</h5>
+                        <button type="button" class="close" aria-label="Cerrar" @onclick="CerrarModal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@((MarkupString) Mensaje)</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-round @ConfirmClass" @onclick="Confirmar">@((MarkupString)BotonConfirmar)</button>
+
+                        <button class="btn btn-round @CancelClass" @onclick="CerrarModal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
