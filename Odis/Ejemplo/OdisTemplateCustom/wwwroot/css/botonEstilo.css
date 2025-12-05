@@ -1,0 +1,11 @@
+
+.bg-blue {
+    background-color: #6c757d !important;
+    color: #fff !important;
+    border-color: #6c757d !important;
+}
+
+    .bg-blue:hover {
+        background-color: #5a6268 !important; 
+        border-color: #545b62 !important;
+    }

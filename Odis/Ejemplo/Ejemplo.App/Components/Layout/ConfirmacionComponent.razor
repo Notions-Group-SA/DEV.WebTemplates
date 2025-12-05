@@ -1,0 +1,22 @@
+﻿<div id="confirmacion" class="row" style="padding-top:6rem;">
+
+    <div class=col s12">
+        <img style="width:100%" src="assets/images/check-ok.jpg" />
+    </div>
+
+    <div class="col s12 center">
+        <h3>@Texto</h3>
+    </div>
+
+    <div class="col s12 center" style="padding-top:3rem;">
+
+        <a href="@UrlBack" class="waves-effect waves-light btn bg-primary">Volver</a>
+
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public string Texto { get; set; }
+    [Parameter] public string UrlBack { get; set; }
+}

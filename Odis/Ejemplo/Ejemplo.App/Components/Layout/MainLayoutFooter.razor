@@ -1,0 +1,79 @@
+﻿@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<div class="footer-menu circular" style="z-index:100 !important;">
+    <ul>
+        <li>
+            <a @onclick="OnMensajes">
+                <i class="mdi mdi-message-bulleted"></i>
+                <span>Mensajes</span>
+            </a>
+        </li>
+        <li>
+            <a @onclick="OnNovedades">
+                <i class="mdi mdi-newspaper"></i>
+                <span>Novedades</span>
+            </a>
+        </li>
+        <li>
+            <a @onclick="OnInit" class="active">
+                <i class="mdi mdi-camera-timer"></i>
+                <span>Inicio</span>
+            </a>
+        </li>
+        <li>
+            <a @onclick="OnServicios">
+                <i class="mdi mdi-all-inclusive"></i>
+                <span>Servicios</span>
+            </a>
+        </li>
+        <li>
+            <a @onclick="OnMenu">
+                <i class="mdi mdi-menu"></i>
+                <span>Menu</span>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private void OnInit()
+    {
+        var uri = new Uri(_Navigation.Uri);
+        if (!uri.AbsolutePath.Contains("/Index") && uri.AbsolutePath != "/")
+            _Navigation.NavigateTo("Index", true);
+    }
+
+    private void OnMensajes()
+    {
+        var uri = new Uri(_Navigation.Uri);
+        if (uri.AbsolutePath != "/Mensajes")
+            _Navigation.NavigateTo("Mensajes", true);
+    }
+
+    private void OnNovedades()
+    {
+        var uri = new Uri(_Navigation.Uri);
+        if (uri.AbsolutePath != "/Novedades")
+            _Navigation.NavigateTo("Novedades", true);
+    }
+
+    private void OnServicios()
+    {
+        var uri = new Uri(_Navigation.Uri);
+        if (uri.AbsolutePath != "/Servicios")
+            _Navigation.NavigateTo("Servicios", true);
+    }
+
+    private void OnMenu()
+    {
+        var uri = new Uri(_Navigation.Uri);
+        if (uri.AbsolutePath != "/Menu")
+            _Navigation.NavigateTo("Menu", true);
+    }
+}

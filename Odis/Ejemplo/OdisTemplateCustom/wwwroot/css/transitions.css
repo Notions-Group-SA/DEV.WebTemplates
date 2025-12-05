@@ -1,0 +1,49 @@
+/*
+  1. Activa las transiciones de vista entre documentos (cross-document).
+  'navigation: auto' le indica al navegador que intercepte las navegaciones
+  del mismo origen y, si ambas páginas lo permiten, realice una transición.
+*/
+@view-transition {
+  navigation: auto;
+}
+
+/*
+  2. Definir las animaciones de entrada y salida.
+  Creamos animacion para la página "vieja" que se va
+  y otra para la página "nueva" que llega.
+*/
+
+@keyframes slide-to-left {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+    scale: 1;
+  }
+  25% {
+    transform: translateX(0);
+  }
+  50% {
+    scale: 0.8;
+    filter: blur(10px);
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0.5;
+  }
+}
+
+::view-transition-old(main-content) {
+  animation: 0.5s cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+}
+
+::view-transition-new(main-content) {
+  animation: 0.5s cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+}

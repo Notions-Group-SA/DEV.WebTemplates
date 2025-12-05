@@ -15,7 +15,7 @@
 
     <link rel="icon" type="image/png" href="favicon.png" />
 
-    <HeadOutlet />
+
 
     <!-- App Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="assets/images/icons/apple-icon-57x57.png">
@@ -45,19 +45,16 @@
     <link href="modules/fonts/mdi/materialdesignicons.min.css" type="text/css" rel="stylesheet" media="screen" />
     <link href="modules/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen" />
 
-
     <!-- CORE CSS FRAMEWORK - END -->
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
     <!-- CORE CSS TEMPLATE - START -->
 
-
     <link href="assets/css/style.css" type="text/css" rel="stylesheet" media="screen" id="main-style" />
     <!-- CORE CSS TEMPLATE - END -->
 
-    <!-- components-commons -->
+    <HeadOutlet />
 
-    <link rel="stylesheet" href="css/commons/blazor-reconnect.css?v=@version" />
 </head>
 
 <body class=" menu-full  isfullscreen  html" data-header="light" data-footer="light" data-header_align="app" data-menu_type="left" data-menu="light" data-menu_icons="on" data-footer_type="left" data-site_mode="light" data-footer_menu="show" data-footer_menu_style="light">
@@ -69,22 +66,25 @@
 
     <script src="assets/js/pwa.js"></script>
 
+    <div>
     <!-- LOAD FILES AT PAGE END FOR FASTER LOADING -->
     <!-- CORE JS FRAMEWORK - START -->
     <script src="modules/jquery/jquery-2.2.4.min.js"></script>
     <script src="modules/materialize/materialize.js"></script>
     <script src="modules/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/variables.js"></script>
+    </div>
+
+    <div>
     <!-- CORE JS FRAMEWORK - END -->
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
     <script src="assets/js/common.js"></script><!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
     <!-- CORE TEMPLATE JS - START -->
     <script src="modules/app/init.js"></script>
     <script src="modules/app/settings.js"></script>
-
     <script src="modules/app/scripts.js"></script>
-
     <!-- END CORE TEMPLATE JS - END -->
+    </div>
 
     <script src="assets/js/preloader.js"></script>
 

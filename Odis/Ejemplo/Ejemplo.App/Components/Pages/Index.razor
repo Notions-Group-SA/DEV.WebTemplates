@@ -1,0 +1,654 @@
+﻿@page "/"
+@page "/Index"
+
+@layout MainLayoutBasic
+
+@attribute [Authorize]
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+@using Ejemplo.App.Components.Layout
+@using Ejemplo.DataManager.Models;
+
+@using System.Data;
+@using Microsoft.AspNetCore.Authorization
+
+@using Microsoft.JSInterop
+
+@inject IHttpContextAccessor _httpContextAccessor
+
+<link href="assets/css/ng-placeholder.css?v=@version" type="text/css" rel="stylesheet" />
+
+<style>
+    .carousel-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+        touch-action: pan-y; /* Permitir gestos horizontales */
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.4s ease-in-out;
+        width: 100%;
+    }
+
+    .carousel-item {
+        flex: 0 0 100%;
+        position: relative;
+    }
+
+        .carousel-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+    .item-description {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .carousel-indicators {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+    }
+
+    .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+    }
+
+        .indicator.active {
+            background-color: white;
+        }
+
+    .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    .prev {
+        left: 10px;
+    }
+
+    .next {
+        right: 10px;
+    }
+</style>
+
+<div class="pagehead-bg primary-bg">
+</div>
+
+<div class="container has-pagehead is-pagetitle">
+    <div class="section">
+        <div class="row pagetitle">
+
+            @if (isLoading)
+            {
+                <div class="col s12" style="mix-blend-mode: color-burn;">
+
+                    <div class="ngplaceholder ngplaceholder-label"></div>
+                    <div class="ngplaceholder ngplaceholder-text"></div>
+
+                </div>
+            }
+            else
+            {
+                <div class="col s3">
+                    <img src="assets/images/logo2.png?v=@version" style="height: 70px;" />
+                </div>
+                <div class="col s9">
+
+                    <h5>Hola @_auth.Nombre!</h5>
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div style="background: #ece8e8; min-height:100vh">
+
+    <div class="container">
+
+        <div id="Principales" style="margin-top: 0px !important;" class="card card-body">
+
+            <div class="container">
+
+                <div class="row mb0 mt0">
+                    <div class="col s12 pad-0">
+                        <h5 class="sec-tit  ">App Ciudadano</h5>
+                    </div>
+                </div>
+
+            </div>
+
+            @if (isLoading)
+            {
+                <div class="row">
+
+                    <div class="col-lg-12" style="padding:15px">
+
+                        <div class="ngplaceholder ngplaceholder-label"></div>
+                        <div class="ngplaceholder ngplaceholder-text"></div>
+
+                        <div class="ngplaceholder ngplaceholder-label"></div>
+                        <div class="ngplaceholder ngplaceholder-text"></div>
+
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <ul class="subpages collection">
+
+                    @if (hasReclamos)
+                    {
+                        <li class="collection-item">
+                            <a href="#" class="waves-effect" @onclick="OnClickReclamos"><i class="fas fa-comment-dots"></i><span>@TipoTicketModel.Descripcion</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                        </li>
+                    }
+                    @if (hasTurnos)
+                    {
+                        <li class="collection-item">
+                            <a href="#" class="waves-effect" @onclick="OnClickTurnos"><i class="fas fa-calendar"></i><span>Turnos</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                        </li>
+                    }
+                    @if (hasTramites)
+                    {
+                        <li class="collection-item">
+                            <a href="#" class="waves-effect" @onclick="OnClickTramites"><i class="fas fa-list"></i><span>Guía de Trámites</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                        </li>
+                    }
+                    @if (hasMisGestiones)
+                    {
+                        <li class="collection-item">
+                            <a href="#" class="waves-effect" @onclick="OnClickGestiones"><i class="far fa-file-alt"></i><span>Mis Gestiones</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                        </li>
+                    }
+                    @* @if (hasDenuncias)
+                    {
+                        <li class="collection-item">
+                            <a href="denuncias" class="waves-effect"><i class="fas fa-user-shield"></i><span>Denuncias</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                        </li>
+                    }
+                    @if (hasDefensaConsumidor)
+                    {
+                        <li class="collection-item">
+                            <a href="DefensaConsumidor" class="waves-effect"><i class="fas fa-gavel"></i><span>Defensa al consumidor</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                        </li>
+                    } *@
+
+                </ul>
+            }
+
+        </div>
+
+        <div id="ServiciosDigitales" class="card card-body">
+
+            <div class="container">
+
+                <div class="row mb3 mt0">
+                    <div class="col s12 pad-0">
+                        <h5 class="sec-tit  ">Servicios Digitales</h5>
+                        <span></span>
+                    </div>
+                </div>
+
+                @if (isLoading)
+                {
+                    <div class="row">
+
+                        <div class="col-lg-12" style="padding:15px">
+
+                            <div class="ngplaceholder ngplaceholder-label"></div>
+                            <div class="ngplaceholder ngplaceholder-text"></div>
+
+                            <div class="ngplaceholder ngplaceholder-label"></div>
+                            <div class="ngplaceholder ngplaceholder-text"></div>
+
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="row" style="padding-top: 0.2rem; margin-bottom: 0px;">
+
+                        @if (hasJuzgado)
+                        {
+                            <div class="col s4 div-boton-redondo">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="#" @onclick="OnClickMultas">
+                                            <div class="boton-redondo"><i class="fas fa-gavel boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div style="float: none" class="boton-redondo-texto">Multas</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasMedido)
+                        {
+                            <div class="col s4 div-boton-redondo">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a @onclick="OnClickMedido">
+                                            <div class="boton-redondo"><i class="fas fa-car boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">E. Medido</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasHabilitaciones)
+                        {
+                            <div class="col s4 div-boton-redondo">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a @onclick="OnClickComercios">
+                                            <div class="boton-redondo"><i class="fas fa-file-contract boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Comercios</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasObrasParticulares)
+                        {
+                            <div class="col s4 div-boton-redondo">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a @onclick="OnClickObrasParticulares">
+                                            <div class="boton-redondo"><i class="fas fa-pencil-ruler boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Obras particulares</div>
+                                </div>
+                            </div>
+                        }
+
+                        @*  <div class="col s4 div-boton-redondo">
+                            <div style="display: inline-block; text-align: center">
+                                <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                    <a href="#" @onclick="OnClickGestiones">
+                                        <div class="boton-redondo"><i class="far fa-file-alt boton-redondo-icono"></i></div>
+                                    </a>
+                                </div>
+                                <div class="boton-redondo-texto">Mis Gestiones</div>
+                            </div>
+                        </div> *@
+
+                        @if (hasFarmacias)
+                        {
+                            <div class="col s4 div-boton-redondo">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="#" @onclick="OnClickFarmacias">
+                                            <div class="boton-redondo"><i class="fas fa-briefcase-medical boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Farmacias</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasOjosAlerta)
+                        {
+                            <div class="col s4 div-boton-redondo">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="https://api.whatsapp.com/send?phone=1162206176&text=&target=browser">
+                                            <div class="boton-redondo"><i class="fas fa-eye boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Ojos en Alerta</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasTelefonosUtiles)
+                        {
+                            <div class="col s4 div-boton-redondo item-servicios">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="#" @onclick="OnClickTelefonos">
+                                            <div class="boton-redondo"><i class="fas fa-phone boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Tel. Útiles</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasBoleteria)
+                        {
+                            <div class="col s4 div-boton-redondo item-servicios">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="Boleteria">
+                                            <div class="boton-redondo"><i class="fas fa-ticket-alt boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Boletería</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasDillo)
+                        {
+                            <div class="col s4 div-boton-redondo item-servicios">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="dillo">
+                                            <div class="boton-redondo"><i class="far fa-hand-paper boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Lengua de señas</div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (hasTaxi)
+                        {
+                            <div class="col s4 div-boton-redondo item-servicios">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        <a href="habilitaciones-taxis">
+                                            <div class="boton-redondo"><i class="fa fa-car boton-redondo-icono"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="boton-redondo-texto">Taxis</div>
+                                </div>
+                            </div>
+                        }
+
+
+                        @* Servicios *@
+
+                        @foreach (LutServiciosCiudadanoModel servicioModel in ListaServicios)
+                        {
+                            <div class="col s4 div-boton-redondo item-servicios">
+                                <div style="display: inline-block; text-align: center">
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                                        @if (servicioModel.NuevaPagina)
+                                        {
+                                            <a href="@servicioModel.Link?target=browser">
+                                                @if (string.IsNullOrEmpty(servicioModel.AppInicioIcono))
+                                                {
+                                                    <div class="boton-redondo"><i class="fas fa-angle-double-right boton-redondo-icono"></i></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="boton-redondo"><i class="@servicioModel.AppInicioIcono boton-redondo-icono"></i></div>
+                                                }
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@servicioModel.Link">
+                                                @if (string.IsNullOrEmpty(servicioModel.AppInicioIcono))
+                                                {
+                                                    <div class="boton-redondo"><i class="fas fa-angle-double-right boton-redondo-icono"></i></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="boton-redondo"><i class="@servicioModel.AppInicioIcono boton-redondo-icono"></i></div>
+                                                }
+                                            </a>
+                                        }
+                                    </div>
+                                    <div class="boton-redondo-texto">@servicioModel.Descripcion</div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+            @if (!isLoading)
+            {
+                <div style="padding-bottom: 1rem; padding-top: 0.5rem;" class="row">
+                    <div class="col s12">
+                        <a style="width: 100%" href="#" class="waves-effect waves-light btn theme-bg-btn" @onclick="OnClickServicios"><i class="fas fa-server"></i>&nbsp; Todos los servicios</a>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+
+        @if (hasBotonesEmergencia)
+        {
+            <div class="card card-body">
+
+                <div class="container">
+
+                    <div class="row mb3 mt0">
+                        <div class="col s12 pad-0">
+                            <h5 class="sec-tit  ">Llamados de Emergencia!</h5>
+                        </div>
+                    </div>
+
+                    @if (!hasBotonPoliciaLocal)
+                    {
+                        <div class="row" style="padding-bottom: 1rem">
+
+                            <div class="col s4">
+                                <a @onclick="OnClickPolicia"><img src="assets/images/policia.png?v1.3" style="width: 100%" /></a>
+                            </div>
+
+                            <div class="col s4">
+                                <a @onclick="OnClickPolicia"><img src="assets/images/Ambulancia.png?v1.3" style="width: 100%" /></a>
+                            </div>
+
+                            <div class="col s4">
+                                <a @onclick="OnClickPolicia"><img src="assets/images/Bomberos.png?v1.3" style="width: 100%" /></a>
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="padding-bottom: 1rem">
+
+                            <div class="row">
+
+                                <div class="col s1"></div>
+
+                                <div class="col s5">
+                                    <a @onclick="OnClickPolicia"><img src="assets/images/policia.png?v1.3" style="width: 100%" /></a>
+                                </div>
+
+                                <div class="col s5">
+                                    <a @onclick="OnClickPolicia"><img src="assets/images/PoliciaLocal.png?v1.3" style="width: 100%" /></a>
+                                </div>
+
+                                <div class="col s1"></div>
+
+                            </div>
+
+                            <div class="row mt-2">
+
+                                <div class="col s1"></div>
+
+                                <div class="col s5">
+                                    <a @onclick="OnClickPolicia"><img src="assets/images/Ambulancia.png?v1.3" style="width: 100%" /></a>
+                                </div>
+
+                                <div class="col s5">
+                                    <a @onclick="OnClickPolicia"><img src="assets/images/Bomberos.png?v1.3" style="width: 100%" /></a>
+                                </div>
+
+                                <div class="col s1"></div>
+
+                            </div>
+
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        }
+
+        @if (hasNovedades)
+        {
+            <div class="Novedades">
+
+                <div class="container">
+
+                    <div class="row mb0 mt0">
+                        <div class="col s12 pad-0">
+                            <h5 class="bot-20 sec-tit  ">Últimas Novedades</h5>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="carousel-container" id="touch-carousel">
+                    <div class="carousel-track" style="transform: translateX(@(-currentIndex * 100)%)">
+                        @foreach (var item in items)
+                        {
+                            string link = "Novedad?Id=" + item.Id;
+
+                            <div class="carousel-item" @onclick="() => _Navigation.NavigateTo(link)">
+
+                                <img src="@item.ImageUrl" alt="@item.Description" />
+                                <div class="item-description">@item.Description</div>
+
+                            </div>
+                        }
+                    </div>
+
+                    <div class="carousel-indicators">
+                        @for (int i = 0; i < items.Count; i++)
+                        {
+                            var index = i;
+                            <span class="indicator @(currentIndex == index ? "active" : "")"
+                                  @onclick="() => GoToSlide(index)"></span>
+                        }
+                    </div>
+
+                    <button class="carousel-control prev" @onclick="() => PreviousSlide()">❮</button>
+                    <button class="carousel-control next" @onclick="() => NextSlide()">❯</button>
+
+                </div>
+
+            </div>
+        }
+        <div style="height:100px;"></div>
+
+    </div>
+
+</div>
+
+
+@code {
+
+    bool isLoading = false;
+    private string version = AppVersion.Version;
+
+    private IJSObjectReference? _module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await _JS.InvokeVoidAsync("initTouchCarousel", "touch-carousel", objRef);
+        }
+
+        // if (_module == null)
+        //     _module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/main.js");
+        // await _module.InvokeVoidAsync("initTemplate");
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+
+    private int currentIndex = 0;
+    private DotNetObjectReference<Index> objRef;
+
+    [JSInvokable]
+    public void HandleSwipe(string direction)
+    {
+        if (direction == "left")
+        {
+            NextSlide();
+        }
+        else if (direction == "right")
+        {
+            PreviousSlide();
+        }
+
+        StateHasChanged();
+    }
+
+    private void NextSlide()
+    {
+        currentIndex = (currentIndex + 1) % items.Count;
+    }
+
+    private void PreviousSlide()
+    {
+        currentIndex = (currentIndex - 1 + items.Count) % items.Count;
+    }
+
+    private void GoToSlide(int index)
+    {
+        currentIndex = index;
+    }
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+
+    public class CarouselItem
+    {
+        public int Id { get; set; }
+        public string ImageUrl { get; set; }
+        public string Description { get; set; }
+    }
+}
+

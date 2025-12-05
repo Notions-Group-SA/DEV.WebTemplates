@@ -1,0 +1,115 @@
+﻿@page "/Menu"
+
+@layout MainLayoutBasic
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+@using Ejemplo.App.Components.Layout
+
+<style>
+    .header-menu {
+        padding-top: 25px;
+        color: white !important;
+    }
+
+        .header-menu .titulo {
+            font-size: 1.5rem;
+        }
+
+        .header-menu .subtitulo {
+            font-size: 1.2rem;
+        }
+
+        .header-menu .icon {
+            font-size: 2.5rem;
+            padding-top: 5px;
+            color: white;
+        }
+</style>
+
+<div class="ui-profile" style="padding-bottom:1px !important">
+
+    <div class="row header-menu">
+        <div class="col s2">
+            <a class="icon" href="Perfil"><i class="fas fa-user-alt icon"></i></a>
+        </div>
+        <div class="col s10">
+            <div class="titulo">@auth.Nombre @auth.Apellido</div>
+            <div class="subtitulo">App Ciudadano Digital</div>
+        </div>
+    </div>
+</div>
+
+<div class="full">
+
+    <div class="section" style="padding-top: 1rem; margin-bottom:60px">
+
+        <ul class="subpages collection">
+
+            <li class="collection-item">
+                <a href="#" class="waves-effect" @onclick="OnClickGestiones"><i class="fas fa-comment-dots"></i><span>Mis Gestiones</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+            <li class="collection-item">
+                <a href="#" class="waves-effect" @onclick="OnClickServicios"><i class="fas fa-infinity"></i><span>Servcicios Digitales</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+            <li class="collection-item">
+                <a href="#" class="waves-effect" @onclick="OnClickTelefonos"><i class="fas fa-phone-alt"></i><span>Telefonos de contacto</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+            <li class="collection-item">
+                <a href="#" class="waves-effect" @onclick="OnClickNovedades"><i class="far fa-newspaper"></i><span>Noticias y novedades</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+            <li class="collection-item">
+                <a href="@PoliticasPrivacidad?target=browser" class="waves-effect"><i class="far fa-newspaper"></i><span>Politicas de privacidad</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+        </ul>
+
+        <div class="container">
+
+            <div class="row mb0 mt0">
+                <div class="col s12 pad-0">
+                    <h5 class="bot-10 sec-tit ">Perfil</h5>
+                </div>
+            </div>
+
+        </div>
+
+        <ul class="subpages collection">
+
+            <li class="collection-item" runat="server" id="divReclamos">
+                <a href="CambioClave" class="waves-effect"><i class="fas fa-comment-dots"></i><span>Cambio de clave</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+            <li class="collection-item" runat="server" id="divTurnos">
+                <a @onclick="onLogout" class="waves-effect"><i class="fas fa-calendar"></i><span>Cerrar Sesión</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+            <li class="collection-item" runat="server" id="divTurnos">
+                <a href="EliminarCuenta" class="waves-effect"><i class="fas fa-calendar"></i><span>Eliminar mi cuenta</span><i class="arrow mdi mdi-chevron-right"></i></a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+@code {
+
+    private string version = AppVersion.Version;
+
+    private IJSObjectReference? _module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_module == null)
+            _module = await _JS.InvokeAsync<IJSObjectReference>("import", "./js/main.js");
+        await _module.InvokeVoidAsync("initTemplate");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+}

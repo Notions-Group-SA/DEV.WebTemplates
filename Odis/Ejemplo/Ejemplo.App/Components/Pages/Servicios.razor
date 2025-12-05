@@ -1,0 +1,173 @@
+﻿@page "/Servicios"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+@using GDA.Core.CiudadanoApp.Components.Layout
+@inject NavigationManager _Navigation
+
+<link href="assets/css/ng-placeholder.css?v=@version" type="text/css" rel="stylesheet" />
+
+<style>
+    .header-menu {
+        padding-top: 25px;
+        color: white !important;
+    }
+
+        .header-menu .titulo {
+            font-size: 1.5rem;
+        }
+
+        .header-menu .subtitulo {
+            font-size: 1.2rem;
+        }
+
+        .header-menu .icon {
+            font-size: 2.5rem;
+            padding-top: 5px;
+            color: white;
+        }
+</style>
+
+<HeaderLayout Title="Servicios Digitales" BackUrl="Index"></HeaderLayout>
+
+<div class="container full subpage over">
+
+    <div class="section">
+
+        <div class="container">
+
+            <div class="row mb0 mt0">
+                <div class="col s12 pad-0">
+                    <h5 class="bot-10 sec-tit  ">¿Que podés hacer con tu App?</h5>
+                </div>
+            </div>
+
+        </div>
+
+        @if (isLoading)
+        {
+            <div class="row">
+
+                <div class="col-lg-12" style="padding:15px;">
+
+                    <div class="ngplaceholder ngplaceholder-label"></div>
+                    <div class="ngplaceholder ngplaceholder-text"></div>
+
+                    <div class="ngplaceholder ngplaceholder-label"></div>
+                    <div class="ngplaceholder ngplaceholder-text"></div>
+
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <ul class="subpages collection">
+
+                @if (hasReclamos)
+                {
+                    <li class="collection-item" runat="server" id="divReclamos">
+                        <a href="#" class="waves-effect" @onclick="OnClickReclamos"><i class="fas fa-comment-dots"></i><span>@TipoTicketModel.Descripcion</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasTurnos)
+                {
+                    <li class="collection-item" runat="server" id="divTurnos">
+                        <a href="#" class="waves-effect" @onclick="OnClickTurnos"><i class="fas fa-calendar"></i><span>Turnos</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasHabilitaciones)
+                {
+                    <li class="collection-item" runat="server" id="divTurnos">
+                        <a href="#" class="waves-effect" @onclick="OnClickComercios"><i class="fas fa-file-contract"></i><span>Comercios</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasObrasParticulares)
+                {
+                    <li class="collection-item" runat="server" id="divTurnos">
+                        <a href="#" class="waves-effect" @onclick="OnClickObrasParticulares"><i class="fas fa-pencil-ruler"></i><span>Obras particulares</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasTramites)
+                {
+                    <li class="collection-item" runat="server" id="divTramites">
+                        <a href="#" class="waves-effect" @onclick="OnClickTramites"><i class="fas fa-list"></i><span>Guia de Trámites</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasDenuncias)
+                {
+                    <li class="collection-item" runat="server" id="divDenuncias">
+                        <a href="#" class="waves-effect"><i class="fas fa-user-shield"></i><span>Denuncias</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasTelefonosUtiles)
+                {
+                    <li class="collection-item" runat="server" id="Li1">
+                        <a href="#" class="waves-effect" @onclick="OnClickTelefonos"><i class="fas fa-phone"></i><span>Teléfonos Útiles</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasJuzgado)
+                {
+                    <li class="collection-item" runat="server" id="divJuzgadoFaltas">
+                        <a href="#" class="waves-effect" @onclick="OnClickMultas"><i class="	fas fa-gavel"></i><span>Juzgado de Faltas</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasMedido)
+                {
+                    <li class="collection-item" runat="server" id="divEMedido">
+                        <a href="#" class="waves-effect" @onclick="OnClickMedido"><i class="fas fa-car"></i><span>Estacionamiento Medido</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+                @if (hasBoleteria)
+                {
+                    <li class="collection-item" runat="server" id="divVentaEntradas">
+                        <a href="BoleteriaDigital" class="waves-effect"><i class="fas fa-ticket-alt"></i><span>Venta de Entradas</span><i class="arrow mdi mdi-chevron-right"></i></a>
+                    </li>
+                }
+
+            </ul>
+        }
+
+
+    </div>
+
+</div>
+
+@code {
+
+    private string version = AppVersion.Version;
+
+    private IJSObjectReference? _module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_module == null)
+            _module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/main.js");
+        await _module.InvokeVoidAsync("initTemplate");
+
+
+        if (firstRender)
+        {
+            isLoading = false;
+            StateHasChanged();
+            await Task.Delay(400);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+}

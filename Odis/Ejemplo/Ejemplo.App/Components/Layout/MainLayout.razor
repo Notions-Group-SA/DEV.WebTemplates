@@ -1,0 +1,49 @@
+﻿@inherits LayoutComponentBase
+
+@using Ejemplo.App.Herlpers
+@using Microsoft.AspNetCore.Authorization
+@using Ejemplo.App.Utils.Auth
+
+@inject LutParametrosDataManager _parametros
+@inject IHttpContextAccessor _httpContextAccessor
+@inject NavigationManager _Navigation
+
+<div style="view-transition-name: main-content; z-index:0;">
+    <div class="content-area">
+
+        <div class="container full subpage over">
+
+            <div class="section" style="margin-bottom:60px;">
+                @Body
+            </div>
+
+            <div class="margen-inferior"></div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<MainLayoutFooter></MainLayoutFooter>
+
+@if (GMapsApiKey != null)
+{
+    <script async src="https://maps.googleapis.com/maps/api/js?key=@GMapsApiKey&v=weekly&libraries=marker" defer></script>
+}
+
+
+@code
+{
+    private string Version = "1.0";
+    private bool _isInitialized = false;
+    [CascadingParameter] public string BackUrl { get; set; }
+    [CascadingParameter] public string Title { get; set; }
+    string? GMapsApiKey = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GMapsApiKey = (await _parametros.GetOneAsync("gMapsKey"))?.Valor ?? "-";
+    }
+
+}
